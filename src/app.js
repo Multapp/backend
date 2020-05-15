@@ -3,6 +3,7 @@ const morgan = require('morgan')
 const path = require('path')
 const routes = require('./routes/index')
 const bodyParser = require('body-parser')
+const cookieParser = require("cookie-parser")
 
 const app = express()
 
@@ -13,6 +14,7 @@ app.set('port', process.env.PORT || 4000)
 app.use(morgan('dev'))
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
+app.use(cookieParser())
 
 //Routes
 app.use(routes)

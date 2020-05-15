@@ -20,6 +20,37 @@ router.get('/health', (req, res) => {
     res.send("It's alive")
 })
 
+// Request $CLIENTE environment variable
+var cliente = process.env['CLIENTE'];
+if (!cliente) {
+  throw new Error('The $CLIENTE environment variable was not found!');
+}
+cliente = JSON.stringify(cliente);
+
+// Set session cookie
+router.post('/sessionLogin', (req, res) => {
+    const idToken = req.body.idToken.toString();
+    const expiresIn = 60 * 60 * 8 * 1000;
+    admin
+        .auth().createSessionCookie(idToken, { expiresIn })
+        .then(
+        (sessionCookie) => {
+            const options = { maxAge: expiresIn, httpOnly: true };
+            res.cookie("session", sessionCookie, options);
+            res.end(JSON.stringify({ status: "Success" }));
+        },
+        (error) => {
+            res.status(401).send("UNAUTHORIZED REQUEST!");
+        }
+    );
+});
+
+// Clear session cookie
+router.get('/sessionLogout', (req, res) => {
+    res.clearCookie("session");
+    //res.redirect("/");
+})
+
 //MULTAS
     //GET
 router.get('/getAll',(req, res) => {
