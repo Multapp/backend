@@ -5,8 +5,6 @@ const routes = require('./routes/index')
 const bodyParser = require('body-parser')
 const cookieParser = require("cookie-parser")
 
-//Probando Deploy
-
 const app = express()
 
 //Settings
