@@ -1,4 +1,4 @@
-const app = require('./app')
+import { listen, get } from './app'
 
-app.listen(app.get('port'))
-console.log('Server is running on PORT:', app.get('port'))
+listen(get('port'))
+console.log('Server is running on PORT:', get('port'))
