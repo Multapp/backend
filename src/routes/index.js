@@ -1,6 +1,6 @@
-const { Router } = require('express');
+import Router from 'express'
 const router = Router();
-const admin = require('firebase-admin');
+import admin from 'firebase-admin'
 
 
 // Request $CREDS environment variable
@@ -182,4 +182,4 @@ router.get('/jueces/:id', (req,res) => {
 });
 
 
-module.exports = router;
+export default routes = router;

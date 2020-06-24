@@ -1,9 +1,9 @@
-const express = require('express')
-const morgan = require('morgan')
-const path = require('path')
-const routes = require('./routes/index')
-const bodyParser = require('body-parser')
-const cookieParser = require("cookie-parser")
+import express from 'express'
+import morgan from 'morgan'
+import path from 'path'
+import routes from './routes/index.js'
+import bodyParser from 'body-parser'
+import cookieParser from 'cookie-parser'
 
 const app = express()
 
@@ -22,4 +22,4 @@ app.use(routes)
 //Static files
 app.use(express.static(path.join(__dirname,'public')))
 
-module.exports = app
+export const ap = app
