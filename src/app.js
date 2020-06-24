@@ -22,4 +22,4 @@ app.use(routes)
 //Static files
 app.use(express.static(path.join(__dirname,'public')))
 
-module.exports = app
+export var app
