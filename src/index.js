@@ -1,4 +1,4 @@
-import { listen, get } from './app'
+import app from './app'
 
-listen(get('port'))
-console.log('Server is running on PORT:', get('port'))
+app.listen(app.get('port'))
+console.log('Server is running on PORT:', app.get('port'))
