@@ -1,6 +1,7 @@
-import Router from 'express'
+const { Router } = require('express');
 const router = Router();
-import admin from 'firebase-admin'
+const admin = require('firebase-admin');
+require('dotenv/config');
 
 
 // Request $CREDS environment variable
@@ -182,4 +183,4 @@ router.get('/jueces/:id', (req,res) => {
 });
 
 
-export default routes = router;
+module.exports = router;
