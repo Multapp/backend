@@ -55,7 +55,7 @@ router.get('/sessionLogout', (req, res) => {
 
 // obtener multas resumidas
 router.get('/getMultas', (req, res) => {
-    db.collection('multa').get()
+    db.collection('multas').get()
         .then(snapshot => {
             if (snapshot.empty) {
                 console.log("Colección de multas vacía");
