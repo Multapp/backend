@@ -1,7 +1,9 @@
 const { Router } = require('express');
 const router = Router();
 const admin = require('firebase-admin');
+require('dotenv/config');
 
+//Deploy
 
 // Request $CREDS environment variable
 const keysEnvVar = process.env['CREDS'];

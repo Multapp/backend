@@ -1,0 +1,7 @@
+setup:
+  config:
+    CLIENTE: ${CLIENTE}
+    CREDS: ${CREDS}
+build:
+  docker:
+    web: Dockerfile
