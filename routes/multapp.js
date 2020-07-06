@@ -53,26 +53,31 @@ router.get('/sessionLogout', (req, res) => {
     //res.redirect("/");
 })
 
-//MULTAS
-    //GET
-router.get('/getAll',(req, res) => {
-    var texto = '{ ';
-    db.collection('multa').get().then((snapshot) => {
-        snapshot.forEach((doc) => {
-            texto += '"' + doc.id + '" : ' + JSON.stringify(doc.data()) + ', ';
-        });  
-        texto = texto.slice(0, -2);
-        texto += '}'
-        if(texto.length > 2){
-            res.send(JSON.parse(texto));
-        } else{
-            res.send('Base de datos vacía o inexistente')
-        }
-    })
-    .catch((err) => {
-        console.log('Error getting documents', err);
-    });  
-    
+/*** Endpoints de multas ***/
+
+// obtener multas resumidas
+router.get('/getMultas', (req, res) => {
+    db.collection('multas').get()
+        .then(snapshot => {
+            if (snapshot.empty) {
+                console.log("Colección de multas vacía");
+            }
+            else {
+                const multasResumidas = snapshot.map(multa => {
+                    return {
+                        id: multa.id,
+                        nombreConductor: multa.data.conductor.nombre,
+                        dniConductor: multa.data.conductor.nroDocumento,
+                        fecha: multa.data.ubicacion.fecha,
+                        extracto: multa.data.infraccion.extracto,
+                        estado: multa.data.estado,
+                    }
+                });
+                res.send(multasResumidas);
+            }
+        }).catch(error => {
+            console.log("Error al recuperar multas", error);
+        });
 });
 
 //MULTAS
