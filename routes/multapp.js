@@ -80,6 +80,36 @@ router.get('/getMultas', (req, res) => {
         });
 });
 
+// obtener todos los datos de una sola multa
+router.get("/getMulta", (req, res) => {
+    db.collection("multas").doc(req.id).get()
+        .then(snapshot => {
+            res.send({
+                id: snapshot.id,
+                ...snapshot.data,
+            });
+        }).catch(error => {
+            console.log("Error al recuperar multa", error);
+        })
+});
+
+// cambiar de estado una multa
+router.patch("/actualizarEstado", (req, res) => {
+    const multaSinActualizar = {};
+    db.collection("multas").doc(req.id).get()
+        .then(snapshot => {
+            multasSinActualizar = {
+                ...snapshot.data,
+            };
+        });
+    db.collection("multas").doc(req.id).set({
+        ...multaSinActualizar,
+        estado: req.estado,
+        razon: req.razon,
+        idSupervisor: null, // aca tendria que poner el id del supervisor que aprueba la multa
+    });
+});
+
 //MULTAS
     //POST
 router.post('/multa', (req, res) => {
