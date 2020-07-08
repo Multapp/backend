@@ -59,16 +59,19 @@ router.get('/sessionLogout', (req, res) => {
 router.get("/getMultas", (req, res) => {
     db.collection("multas").get()
         .then(snapshot => {
-            console.log(snapshot);
-            const multasResumidas = snapshot.forEach(multa => {
-                return {
+            let multasResumidas = [];
+            snapshot.forEach(multa => {
+                console.log("id", multa.id);
+                console.log("data", multa.data());
+                let multa = {
                     id: multa.id,
                     nombreConductor: multa.data().conductor.nombre,
                     dniConductor: multa.data().conductor.nroDocumento,
                     fecha: multa.data().ubicacion.fecha,
                     extracto: multa.data().infraccion.extracto,
                     estado: multa.data().estado,
-                }
+                };
+                multasResumidas.push(multa);
             });
             res.send(multasResumidas);
         }).catch(error => {
