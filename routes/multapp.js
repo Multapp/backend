@@ -59,22 +59,18 @@ router.get('/sessionLogout', (req, res) => {
 router.get("/getMultas", (req, res) => {
     db.collection("multas").get()
         .then(snapshot => {
-            if (snapshot.empty) {
-                console.log("Colección de multas vacía");
-            }
-            else {
-                const multasResumidas = snapshot.forEach(multa => {
-                    return {
-                        id: multa.id,
-                        nombreConductor: multa.data().conductor.nombre,
-                        dniConductor: multa.data().conductor.nroDocumento,
-                        fecha: multa.data().ubicacion.fecha,
-                        extracto: multa.data().infraccion.extracto,
-                        estado: multa.data().estado,
-                    }
-                });
-                res.send(multasResumidas);
-            }
+            console.log(snapshot);
+            const multasResumidas = snapshot.forEach(multa => {
+                return {
+                    id: multa.id,
+                    nombreConductor: multa.data().conductor.nombre,
+                    dniConductor: multa.data().conductor.nroDocumento,
+                    fecha: multa.data().ubicacion.fecha,
+                    extracto: multa.data().infraccion.extracto,
+                    estado: multa.data().estado,
+                }
+            });
+            res.send(multasResumidas);
         }).catch(error => {
             console.log("Error al recuperar multas", error);
         });
