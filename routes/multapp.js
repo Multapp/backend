@@ -56,14 +56,14 @@ router.get('/sessionLogout', (req, res) => {
 /*** Endpoints de multas ***/
 
 // obtener multas resumidas
-router.get('/getMultas', (req, res) => {
-    db.collection('multas').get()
+router.get("/getMultas", (req, res) => {
+    db.collection("multas").get()
         .then(snapshot => {
             if (snapshot.empty) {
                 console.log("Colección de multas vacía");
             }
             else {
-                const multasResumidas = snapshot.map(multa => {
+                const multasResumidas = snapshot.forEach(multa => {
                     return {
                         id: multa.id,
                         nombreConductor: multa.data.conductor.nombre,
