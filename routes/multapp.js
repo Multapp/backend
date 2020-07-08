@@ -66,11 +66,11 @@ router.get("/getMultas", (req, res) => {
                 const multasResumidas = snapshot.forEach(multa => {
                     return {
                         id: multa.id,
-                        nombreConductor: multa.data.conductor.nombre,
-                        dniConductor: multa.data.conductor.nroDocumento,
-                        fecha: multa.data.ubicacion.fecha,
-                        extracto: multa.data.infraccion.extracto,
-                        estado: multa.data.estado,
+                        nombreConductor: multa.data().conductor.nombre,
+                        dniConductor: multa.data().conductor.nroDocumento,
+                        fecha: multa.data().ubicacion.fecha,
+                        extracto: multa.data().infraccion.extracto,
+                        estado: multa.data().estado,
                     }
                 });
                 res.send(multasResumidas);
