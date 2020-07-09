@@ -85,7 +85,7 @@ router.get("/getMulta", (req, res) => {
         .then(snapshot => {
             res.send({
                 id: snapshot.id,
-                ...snapshot.data,
+                ...snapshot.data(),
             });
         }).catch(error => {
             console.log("Error al recuperar multa", error);
