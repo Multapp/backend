@@ -101,7 +101,7 @@ router.patch("/actualizarEstado", (req, res) => {
                 ...snapshot.data,
             };
         });
-    db.collection("multas").doc(req.id).set({
+    db.collection("multas").doc(req.query.id).set({
         ...multaSinActualizar,
         estado: req.query.estado,
         razon: req.query.razon,
