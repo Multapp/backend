@@ -81,7 +81,7 @@ router.get("/getMultas", (req, res) => {
 // obtener todos los datos de una sola multa
 router.get("/getMulta", (req, res) => {
     console.log(req);
-    db.collection("multas").doc(req.body.id).get()
+    db.collection("multas").doc(req.query.id).get()
         .then(snapshot => {
             res.send({
                 id: snapshot.id,
