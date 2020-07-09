@@ -57,12 +57,11 @@ router.get('/sessionLogout', (req, res) => {
 
 // obtener multas resumidas
 router.get("/getMultas", (req, res) => {
+    console.log(req);
     db.collection("multas").get()
         .then(snapshot => {
             let multasResumidas = [];
             snapshot.forEach(multa => {
-                console.log("id", multa.id);
-                console.log("data", multa.data());
                 let multaResumida = {
                     id: multa.id,
                     nombreConductor: multa.data().conductor.nombre,
@@ -81,6 +80,7 @@ router.get("/getMultas", (req, res) => {
 
 // obtener todos los datos de una sola multa
 router.get("/getMulta", (req, res) => {
+    console.log(req);
     db.collection("multas").doc(req.body.id).get()
         .then(snapshot => {
             res.send({
