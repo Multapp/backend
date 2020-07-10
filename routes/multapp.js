@@ -57,7 +57,6 @@ router.get('/sessionLogout', (req, res) => {
 
 // obtener multas resumidas
 router.get("/getMultas", (req, res) => {
-    console.log(req);
     db.collection("multas").get()
         .then(snapshot => {
             let multasResumidas = [];
@@ -93,18 +92,18 @@ router.get("/getMulta", (req, res) => {
 });
 
 // cambiar de estado una multa
-router.patch("/actualizarEstado", (req, res) => {
+router.post("/actualizarEstado", (req, res) => {
     const multaSinActualizar = {};
-    db.collection("multas").doc(req.query.id).get()
+    db.collection("multas").doc(req.body.id).get()
         .then(snapshot => {
             multasSinActualizar = {
                 ...snapshot.data(),
             };
         });
-    db.collection("multas").doc(req.query.id).set({
+    db.collection("multas").doc(req.body.id).set({
         ...multaSinActualizar,
-        estado: req.query.estado,
-        razon: req.query.razon,
+        estado: req.body.estado,
+        razon: req.body.razon,
         idSupervisor: null, // aca tendria que poner el id del supervisor que aprueba la multa
     });
 });
