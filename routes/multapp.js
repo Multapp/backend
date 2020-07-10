@@ -98,7 +98,7 @@ router.patch("/actualizarEstado", (req, res) => {
     db.collection("multas").doc(req.query.id).get()
         .then(snapshot => {
             multasSinActualizar = {
-                ...snapshot.data,
+                ...snapshot.data(),
             };
         });
     db.collection("multas").doc(req.query.id).set({
