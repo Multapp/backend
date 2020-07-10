@@ -96,7 +96,7 @@ router.post("/actualizarEstado", (req, res) => {
     const multaSinActualizar = {};
     db.collection("multas").doc(req.body.id).get()
         .then(snapshot => {
-            multasSinActualizar = {
+            multaSinActualizar = {
                 ...snapshot.data(),
             };
         });
