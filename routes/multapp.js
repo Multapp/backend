@@ -79,7 +79,6 @@ router.get("/getMultas", (req, res) => {
 
 // obtener todos los datos de una sola multa
 router.get("/getMulta", (req, res) => {
-    console.log(req);
     db.collection("multas").doc(req.query.id).get()
         .then(snapshot => {
             res.send({
@@ -100,6 +99,7 @@ router.post("/actualizarEstado", (req, res) => {
                 ...snapshot.data(),
             };
         });
+    console.log(multaSinActualizar);
     db.collection("multas").doc(req.body.id).set({
         ...multaSinActualizar,
         estado: req.body.estado,
