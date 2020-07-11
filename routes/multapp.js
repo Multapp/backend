@@ -92,8 +92,8 @@ router.get("/getMulta", (req, res) => {
 
 // cambiar de estado una multa
 router.post("/actualizarEstado", (req, res) => {
-    const multaSinActualizar = {};
-    db.collection("multas").doc(req.body.id).get()
+    let multaSinActualizar = {};
+    db.collection("multas").doc("" + req.body.id).get()
         .then(snapshot => {
             multaSinActualizar = {
                 ...snapshot.data(),
