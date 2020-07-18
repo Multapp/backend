@@ -1,7 +1,7 @@
 module.exports = function (db) {
     return {
         getMultaById: function (req, res, next) {
-            db.collection("multas").doc(req.body.id).get()
+            db.collection("multas").doc(req.query.id).get()
                 .then(snapshot => {
                     res.send({
                         id: snapshot.id,
