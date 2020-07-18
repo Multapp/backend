@@ -17,8 +17,12 @@ admin.initializeApp({
     credential: admin.credential.cert(keys)
 })
 const db = admin.firestore();
+
 const multasService = require('./services/multasService.js')(db)
 const multasController = require('./controllers/multasController.js')(multasService)
+
+const usuariosService = require('./services/usuariosService.js')(db)
+const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
 //HEALTH
 router.get('/health', healthCheck)
@@ -98,6 +102,14 @@ router.post('/multa', (req, res) => {
     db.collection('multas').add(req.body);
     res.send('Multa guardada');
 });
+
+/*** Endpoints de usuarios ***/
+
+// obtener usuarios resumidos
+router.get("/getUsuarios", usuariosController.getUsuarios);
+
+// obtener todos los datos de un solo usuario
+router.get("/getUsuario", usuariosController.getUsuarioById);
 
 //INSPECTORES
     //GET
