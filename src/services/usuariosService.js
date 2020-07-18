@@ -20,8 +20,8 @@ module.exports = (db) => {
                         console.log("data", usuario.data());
                         let usuarioResumido = {
                             id: usuario.id,
-                            nombre: usuarios.data().apellido + " " + usuario.data().nombre,
-                            foto: usuarios.data().foto,
+                            nombre: usuario.data().apellido + " " + usuario.data().nombre,
+                            foto: usuario.data().foto,
                         };
                         usuariosResumidos.push(usuarioResumido);
                     });
