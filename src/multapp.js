@@ -83,19 +83,19 @@ router.patch("/actualizarEstado", (req, res) => {
     //POST
 router.post('/multa', (req, res) => {
     console.log(req.body);
-    const newMulta = {
-        Domicilio: req.body.domicilio,
-        FechaEmision: req.body.fechaEmision,
-        Hora: req.body.hora,
-        Nacimiento: req.body.nacimiento,
-        NroDoc: req.body.nroDoc,
-        Sexo: req.body.sexo,
-        TipoDoc: req.body.tipoDoc,
-        ApellidoInfractor: req.body.apellidoInfractor,
-        NombresInfractor: req.body.nombresInfractor
-        // Tal vez estaría bueno guardar un identificador del inspector que manda la multa
-    };
-    db.collection('multas').add(newMulta);
+//    const newMulta = {
+//        Domicilio: req.body.domicilio,
+//        FechaEmision: req.body.fechaEmision,
+//        Hora: req.body.hora,
+//        Nacimiento: req.body.nacimiento,
+//        NroDoc: req.body.nroDoc,
+//        Sexo: req.body.sexo,
+//        TipoDoc: req.body.tipoDoc,
+//        ApellidoInfractor: req.body.apellidoInfractor,
+//        NombresInfractor: req.body.nombresInfractor
+//        // Tal vez estaría bueno guardar un identificador del inspector que manda la multa
+//    };
+    db.collection('multas').add(req.body);
     res.send('Multa guardada');
 });
 
