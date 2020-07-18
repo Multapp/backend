@@ -26,7 +26,7 @@ module.exports = function (db) {
                             extracto: multa.data().infraccion.extracto,
                             estado: multa.data().estado,
                         };*/
-                        multasResumidas.push(multa);
+                        multasResumidas.push(multa.data());
                     });
                     res.send(multasResumidas);
                 }).catch(error => {
