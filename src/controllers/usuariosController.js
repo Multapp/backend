@@ -5,6 +5,9 @@ module.exports = function(usuariosService) {
         },
         getUsuarioById: function (req, res, next) {
             usuariosService.getUsuarioById(req, res, next)
+        },
+        addUsuario: function (req, res, next) {
+            usuariosService.addUsuario(req, res, next)
         }
     }
 }

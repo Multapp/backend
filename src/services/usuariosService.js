@@ -30,5 +30,8 @@ module.exports = (db) => {
                     console.log("Error al recuperar usuarios", error);
                 });
         },
+        addUsuario: (req, res, next) => {
+            db.collection("usuarios").add(req.body.usuario);
+        }
     }
 }

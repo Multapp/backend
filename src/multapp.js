@@ -111,6 +111,9 @@ router.get("/getUsuarios", usuariosController.getUsuarios);
 // obtener todos los datos de un solo usuario
 router.get("/getUsuario", usuariosController.getUsuarioById);
 
+// crear un usuario
+router.post("/addUsuario", usuariosController.addUsuario);
+
 //INSPECTORES
     //GET
 router.get('/inspectores/todos', (req,res) =>{
