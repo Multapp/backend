@@ -114,6 +114,9 @@ router.get("/getUsuario", usuariosController.getUsuarioById);
 // crear un usuario
 router.post("/addUsuario", usuariosController.addUsuario);
 
+// eliminar un usuario
+router.delete("/deleteUsuario", usuariosController.deleteUsuario);
+
 //INSPECTORES
     //GET
 router.get('/inspectores/todos', (req,res) =>{

@@ -37,6 +37,9 @@ module.exports = (db) => {
             // crear la cuenta del tipo en authentication
             // mandarle correo al tipo con su contraseña
             db.collection("usuarios").add(req.body.usuario);
+        },
+        deleteUsuario: (req, res, next) => {
+            db.collection("usuarios").doc(req.query.id).delete();
         }
     }
 }
