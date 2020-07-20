@@ -20,6 +20,7 @@ module.exports = (db) => {
                         console.log("data", usuario.data());
                         let usuarioResumido = {
                             id: usuario.id,
+                            rol: usuario.rol,
                             nombre: usuario.data().apellido + " " + usuario.data().nombre,
                             foto: usuario.data().foto,
                         };
@@ -31,6 +32,10 @@ module.exports = (db) => {
                 });
         },
         addUsuario: (req, res, next) => {
+            // aca tambien habria que:
+            // guardar la foto del tipo en storage
+            // crear la cuenta del tipo en authentication
+            // mandarle correo al tipo con su contraseña
             db.collection("usuarios").add(req.body.usuario);
         }
     }
