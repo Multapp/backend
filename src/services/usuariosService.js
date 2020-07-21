@@ -36,14 +36,19 @@ module.exports = (db) => {
             // guardar la foto del tipo en storage
             // crear la cuenta del tipo en authentication
             // mandarle correo al tipo con su contraseña
-            db.collection("usuarios").add(req.body.usuario);
+            db.collection("usuarios").add(req.body.usuario)
+                .then(snapshot => {
+                    res.send("Ususario creado correctamente");
+                }).catch(error => {
+                    res.send("Error al crear usuario", error);
+                });
         },
         deleteUsuario: (req, res, next) => {
             db.collection("usuarios").doc(req.query.id).delete()
                 .then(snapshot => {
                     res.send("Usuario " + req.query.id + " eliminado correctamente");
                 }).catch(error => {
-                    res.send("Error al eliminar usuario " + res.query.id);
+                    res.send("Error al eliminar usuario " + res.query.id, error);
                 });
             
         }
