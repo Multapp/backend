@@ -39,7 +39,13 @@ module.exports = (db) => {
             db.collection("usuarios").add(req.body.usuario);
         },
         deleteUsuario: (req, res, next) => {
-            db.collection("usuarios").doc(req.query.id).delete();
+            db.collection("usuarios").doc(req.query.id).delete()
+                .then(snapshot => {
+                    res.send("Usuario " + req.query.id + " eliminado correctamente");
+                }).catch(error => {
+                    res.send("Error al eliminar usuario " + res.query.id);
+                });
+            
         }
     }
 }
