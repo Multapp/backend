@@ -38,9 +38,21 @@ module.exports = (db) => {
             // mandarle correo al tipo con su contraseña
             db.collection("usuarios").add(req.body.usuario)
                 .then(snapshot => {
-                    res.send("Ususario creado correctamente");
+                    res.send("Usuario creado correctamente");
                 }).catch(error => {
                     res.send("Error al crear usuario", error);
+                });
+        },
+        editUsuario: (req, res, next) => {
+            // aca tambien habria que:
+            // guardar la foto nueva en storage
+            // cambiar el correo del tipo en authentication (si es que se cambio)
+            // mandarle correo al tipo con el cambio de correo
+            db.collection("usuarios").doc(req.body.id).update(req.body.usuario)
+                .then(snapshot => {
+                    res.send("Usuario actualizado correctamente");
+                }).catch(error => {
+                    res.send("Error al actualizar usuario", error);
                 });
         },
         deleteUsuario: (req, res, next) => {

@@ -114,6 +114,9 @@ router.get("/getUsuario", usuariosController.getUsuarioById);
 // crear un usuario
 router.post("/addUsuario", usuariosController.addUsuario);
 
+// editar un usuario
+router.post("/editUsuario", usuariosController.editUsuario);
+
 // eliminar un usuario
 router.delete("/deleteUsuario", usuariosController.deleteUsuario);
 

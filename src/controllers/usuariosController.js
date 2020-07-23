@@ -9,6 +9,9 @@ module.exports = function(usuariosService) {
         addUsuario: function (req, res, next) {
             usuariosService.addUsuario(req, res, next)
         },
+        editUsuario: function (req, res, next) {
+            usuariosService.editUsuario(req, res, next)
+        },
         deleteUsuario: function (req, res, next) {
             usuariosService.deleteUsuario(req, res, next)
         }
