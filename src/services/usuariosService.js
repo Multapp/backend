@@ -8,7 +8,7 @@ module.exports = (db) => {
                         ...snapshot.data(),
                     });
                 }).catch(error => {
-                    console.log("Error al recuperar usuario", error);
+                    console.log("Error al recuperar usuario " + req.query.id, error);
                 });
         },
         getUsuarios: (req, res, next) => {
@@ -16,8 +16,6 @@ module.exports = (db) => {
                 .then(snapshot => {
                     let usuariosResumidos = [];
                     snapshot.forEach(usuario => {
-                        console.log("id", usuario.id);
-                        console.log("data", usuario.data());
                         let usuarioResumido = {
                             id: usuario.id,
                             rol: usuario.data().rol,
@@ -50,9 +48,9 @@ module.exports = (db) => {
             // mandarle correo al tipo con el cambio de correo
             db.collection("usuarios").doc(req.body.id).update(req.body.usuario)
                 .then(snapshot => {
-                    res.send("Usuario actualizado correctamente");
+                    res.send("Usuario " + req.body.id + " actualizado correctamente");
                 }).catch(error => {
-                    res.send("Error al actualizar usuario", error);
+                    res.send("Error al actualizar usuario " + req.body.id, error);
                 });
         },
         deleteUsuario: (req, res, next) => {
