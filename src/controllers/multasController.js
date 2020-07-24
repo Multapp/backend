@@ -5,6 +5,9 @@ module.exports = function(multasService) {
         },
         getMultaById: function (req, res, next) {
             multasService.getMultaById(req, res, next)
+        },
+        actualizarEstado: function (req, res, next) {
+            multasService.actualizarEstado(req, res, next)
         }
     }
 }

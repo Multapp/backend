@@ -67,21 +67,7 @@ router.get("/getMultas", multasController.getAllMultas);
 router.get("/getMulta", multasController.getMultaById);
 
 // cambiar de estado una multa
-router.patch("/actualizarEstado", (req, res) => {
-    const multaSinActualizar = {};
-    db.collection("multas").doc(req.id).get()
-        .then(snapshot => {
-            multasSinActualizar = {
-                ...snapshot.data,
-            };
-        });
-    db.collection("multas").doc(req.id).set({
-        ...multaSinActualizar,
-        estado: req.estado,
-        razon: req.razon,
-        idSupervisor: null, // aca tendria que poner el id del supervisor que aprueba la multa
-    });
-});
+router.post("/actualizarEstado", multasController.actualizarEstado);
 
 //MULTAS
     //POST

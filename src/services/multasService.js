@@ -32,6 +32,17 @@ module.exports = function (db) {
                 }).catch(error => {
                     console.log("Error al recuperar multas", error);
                 });
+        },
+        actualizarEstado: function (req, res, next) {
+            db.collection("multas").doc(req.body.id).update({
+                estado: req.body.estado,
+                razon: req.body.razon,
+                idSupervisor: null, // aca tendria que poner el id del supervisor que aprueba la multa
+            }).then(snapshot => {
+                res.send("Estado de multa " + req.id + " actualizado con éxito");
+            }).catch(error => {
+                res.send("Error al actualizar estado de multa " + req.id);
+            });
         }
     }
 }
