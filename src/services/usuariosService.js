@@ -1,5 +1,3 @@
-const { admin } = require("firebase-admin/lib/database");
-
 module.exports = (db) => {
     return {
         getUsuarioById: (req, res, next) => {
