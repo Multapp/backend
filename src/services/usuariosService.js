@@ -1,3 +1,5 @@
+const { admin } = require("firebase-admin/lib/database");
+
 module.exports = (db) => {
     return {
         getUsuarioById: (req, res, next) => {
@@ -32,11 +34,30 @@ module.exports = (db) => {
         addUsuario: (req, res, next) => {
             // aca tambien habria que:
             // guardar la foto del tipo en storage
-            // crear la cuenta del tipo en authentication
             // mandarle correo al tipo con su contraseña
-            db.collection("usuarios").add(req.body.usuario)
-                .then(snapshot => {
-                    res.send("Usuario creado correctamente");
+            admin.auth().createUser({
+                email: req.body.usuario.email,
+                password: Math.floor(Math.random() * (1000000 - 100000) ) + 100000,
+                displayName: req.body.usuario.nombre + " " + req.body.usuario.apellido,
+                photoURL: null,
+            })
+                .then(userRecord => {
+                    let uid = userRecord.uid;
+                    admin.auth().setCustomUserClaims(uid, {rol: req.body.usuario.rol})
+                        .then(() => {
+                            db.collection("usuarios").add({
+                                ...req.body.usuario,
+                                uid: uid,
+                            })
+                                .then(() => {
+                                    res.status(201).send("Usuario " + uid + " creado correctamente");
+                                }).catch(error => {
+                                    res.send("Error al crear documento", error);
+                                });
+                        }).catch(error => {
+                            console.log("Error al establcer reclamaciones personalizadas (el rol del usuario)", error);
+                        });
+                    res.send("Usuario " + userRecord.uid + " creado exitosamente");
                 }).catch(error => {
                     res.send("Error al crear usuario", error);
                 });
