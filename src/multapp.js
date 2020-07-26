@@ -21,7 +21,7 @@ const db = admin.firestore();
 const multasService = require('./services/multasService.js')(db)
 const multasController = require('./controllers/multasController.js')(multasService)
 
-const usuariosService = require('./services/usuariosService.js')(db)
+const usuariosService = require('./services/usuariosService.js')(db, admin)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
 //HEALTH

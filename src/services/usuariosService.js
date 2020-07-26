@@ -1,4 +1,4 @@
-module.exports = (db) => {
+module.exports = (db, admin) => {
     return {
         getUsuarioById: (req, res, next) => {
             db.collection("usuarios").doc(req.query.id).get()
@@ -35,9 +35,10 @@ module.exports = (db) => {
             // mandarle correo al tipo con su contraseña
             admin.auth().createUser({
                 email: req.body.usuario.email,
-                password: Math.floor(Math.random() * (1000000 - 100000) ) + 100000,
+                password: (Math.floor(Math.random() * (1000000 - 100000) ) + 100000).toString(),
                 displayName: req.body.usuario.nombre + " " + req.body.usuario.apellido,
-                photoURL: null,
+                phoneNumber: "+54" + req.body.usuario.telefono,
+                // photoURL: null,
             })
                 .then(userRecord => {
                     let uid = userRecord.uid;
@@ -50,14 +51,16 @@ module.exports = (db) => {
                                 .then(() => {
                                     res.status(201).send("Usuario " + uid + " creado correctamente");
                                 }).catch(error => {
-                                    res.send("Error al crear documento", error);
+                                    console.log(error);
+                                    res.status(500).send(error);
                                 });
                         }).catch(error => {
-                            console.log("Error al establcer reclamaciones personalizadas (el rol del usuario)", error);
+                            console.log(error);
+                            res.status(500).send(error);
                         });
-                    res.send("Usuario " + userRecord.uid + " creado exitosamente");
                 }).catch(error => {
-                    res.send("Error al crear usuario", error);
+                    console.log(error);
+                    res.status(500).send(error);
                 });
         },
         editUsuario: (req, res, next) => {
