@@ -16,8 +16,6 @@ module.exports = function (db) {
                 .then(snapshot => {
                     let multasResumidas = [];
                     snapshot.forEach(multa => {
-                        console.log("id", multa.id);
-                        console.log("data", multa.data());
                         let multaResumida = {
                             id: multa.id,
                             nombreConductor: multa.data().conductor.apellido + " " + multa.data().conductor.nombre,
