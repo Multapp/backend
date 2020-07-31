@@ -14,15 +14,32 @@ const keys = JSON.parse(keysEnvVar);
 
 // Creating Cloud Firestore instance
 admin.initializeApp({
-    credential: admin.credential.cert(keys)
-})
+    credential: admin.credential.cert(keys),
+    storageBucket: process.env.STORAGE_BUCKET,
+});
+
+// referencia a auth
+const auth = admin.auth();
+
+// referencia a cloud firestore
 const db = admin.firestore();
+
+// esto de storage no anda, tengo que ver como puta hacer
+// referencia a cloud storage
+const storage = admin.storage();
+// const storage = require('@google-cloud/storage');
+// const firebase = require("firebase");
+// const storage = firebase.storage().ref();
+// console.log(storage);
 
 const multasService = require('./services/multasService.js')(db)
 const multasController = require('./controllers/multasController.js')(multasService)
 
-const usuariosService = require('./services/usuariosService.js')(db, admin)
+const usuariosService = require('./services/usuariosService.js')(db, auth, storage)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
+
+const perfilService = require('./services/perfilService.js')(db, auth, storage)
+const perfilController = require('./controllers/perfilController.js')(perfilService)
 
 //HEALTH
 router.get('/health', healthCheck)
@@ -106,93 +123,12 @@ router.post("/editUsuario", usuariosController.editUsuario);
 // eliminar un usuario
 router.delete("/deleteUsuario", usuariosController.deleteUsuario);
 
-//INSPECTORES
-    //GET
-router.get('/inspectores/todos', (req,res) =>{
-    var texto = '{ ';
-    db.collection('inspectores').get().then((snapshot) => {
-        snapshot.forEach((doc) => {
-            texto += '"' + doc.id + '" : ' + JSON.stringify(doc.data()) + ', ';
-        });  
-        texto = texto.slice(0, -2);
-        texto += '}'
-        if(texto.length > 2){
-            res.send(JSON.parse(texto));
-        } else{
-            res.send('Base de datos vacía o inexistente')
-        }
-    })
-    .catch((err) => {
-        console.log('Error getting documents', err);
-    });
-});
+/*** Endpoints de perfil ***/
 
-//INSPECTORES
-    //POST
-router.post('/inspectores/nuevo', (req, res) => {
-    const newInspector = {
-        NombresInspector: req.body.nombreInspector,
-        ApellidoInspector: req.body.apellidoInspector,
-        Domicilio: req.body.domicilio,
-        Nacimiento: req.body.nacimiento,
-        NroDoc: req.body.nroDoc,
-        Sexo: req.body.sexo,
-        TipoDoc: req.body.tipoDoc
-    };
-    db.collection('inspectores').add(newInspector);
-    res.send('Inspector creado');
-})
+// obtener el perfil del usuario actual
+router.get("/getPerfil", perfilController.getPerfil);
 
-//INSPECTORES
-    //DELETE
-router.get('/inspectores/:id', (req,res) => {
-    db.collection('inspectores').doc(req.params.id).delete();
-    res.send('Inspector borrado');
-});
-
-//JUECES
-    //GET
-router.get('/jueces/todos', (req,res) =>{
-    var texto = '{ ';
-    db.collection('jueces').get().then((snapshot) => {
-        snapshot.forEach((doc) => {
-            texto += '"' + doc.id + '" : ' + JSON.stringify(doc.data()) + ', ';
-        });  
-        texto = texto.slice(0, -2);
-        texto += '}'
-        if(texto.length > 2){
-            res.send(JSON.parse(texto));
-        } else{
-            res.send('Base de datos vacía o inexistente')
-        }
-    })
-    .catch((err) => {
-        console.log('Error getting documents', err);
-    });
-});
-
-//JUECES
-    //POST
-router.post('/jueces/nuevo', (req, res) => {
-    const newJuez = {
-        NombresJuez: req.body.nombreInspector,
-        ApellidoJuez: req.body.apellidoInspector,
-        Domicilio: req.body.domicilio,
-        Nacimiento: req.body.nacimiento,
-        NroDoc: req.body.nroDoc,
-        Sexo: req.body.sexo,
-        TipoDoc: req.body.tipoDoc
-    };
-    db.collection('jueces').add(newJuez);
-    res.send('Juez creado');
-});
-
-//JUECES
-    //DELETE
-router.get('/jueces/:id', (req,res) => {
-    db.collection('jueces').doc(req.params.id).delete();
-    res.send('Juez borrado');
-});
-
+// cambiar contraseña
+router.post("/cambiarContrasena", perfilController.cambiarContrasena);
 
 module.exports = router;
