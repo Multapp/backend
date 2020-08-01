@@ -33,22 +33,20 @@ module.exports = (db, auth, storage) => {
             // aca tambien habria que:
             // guardar la foto del tipo en storage
             // mandarle correo al tipo con su contraseña
+            let password = (Math.floor(Math.random() * (1000000 - 100000) ) + 100000).toString();
+            console.log(password);
             auth.createUser({ // crea el usuario
                 email: req.body.usuario.email,
-                password: (Math.floor(Math.random() * (1000000 - 100000) ) + 100000).toString(),
+                password: password,
                 displayName: req.body.usuario.nombre + " " + req.body.usuario.apellido,
                 phoneNumber: "+54" + req.body.usuario.telefono,
             })
                 .then(userRecord => {
-                    console.log("uid", userRecord.uid);
-                    console.log("email", userRecord.email);
-                    console.log("password", userRecord.password);
                     let uid = userRecord.uid;
                     auth.setCustomUserClaims(uid, {rol: req.body.usuario.rol}) // setea el rol del usuario
                         .then(() => { // guarda los datos personales en la base de datos
-                            db.collection("usuarios").add({
+                            db.collection("usuarios").doc(uid).set({
                                 ...req.body.usuario,
-                                uid: uid,
                             })
                                 .then(() => {
                                     // storage.ref().child("avatar/" + uid).put(req.body.foto) // guarda la foto de perfil
