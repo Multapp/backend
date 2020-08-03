@@ -81,14 +81,24 @@ module.exports = (db, auth, storage) => {
         editUsuario: (req, res, next) => {
             // aca tambien habria que:
             // guardar la foto nueva en storage
-            // cambiar el correo del tipo en authentication (si es que se cambio)
             // mandarle correo al tipo con el cambio de correo
-            db.collection("usuarios").doc(req.body.id).update(req.body.usuario)
-                .then(snapshot => {
-                    res.send("Usuario " + req.body.id + " actualizado correctamente");
+            auth.updateUser(req.body.id, {
+                email: req.body.email,
+                phoneNumber: "+54" + req.body.telefono,
+                displayName: req.body.datos.nombre + " " + req.body.datos.apellido,
+            })
+                .then(() => {
+                    db.collection("usuarios").doc(req.body.id).update(req.body.datos)
+                        .then(() => {
+                            res.status(200).send("Usuario " + req.body.id + " actualizado correctamente");
+                        }).catch(error => {
+                            res.send("Error al actualizar usuario " + req.body.id, error);
+                        });
                 }).catch(error => {
-                    res.send("Error al actualizar usuario " + req.body.id, error);
+                    console.log(error);
+                    res.status(500).send(error);
                 });
+            
         },
         deleteUsuario: (req, res, next) => {
             // FALTA
