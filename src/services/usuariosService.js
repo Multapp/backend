@@ -37,17 +37,17 @@ module.exports = (db, auth, storage) => {
             let password = (Math.floor(Math.random() * (1000000 - 100000) ) + 100000).toString();
             console.log(password);
             auth.createUser({ // crea el usuario
-                email: req.body.usuario.email,
+                email: req.body.email,
                 password: password,
-                displayName: req.body.usuario.nombre + " " + req.body.usuario.apellido,
-                phoneNumber: "+54" + req.body.usuario.telefono,
+                displayName: req.body.datos.nombre + " " + req.body.datos.apellido,
+                phoneNumber: "+54" + req.body.telefono,
             })
                 .then(userRecord => {
                     let uid = userRecord.uid;
-                    auth.setCustomUserClaims(uid, {rol: req.body.usuario.rol}) // setea el rol del usuario
+                    auth.setCustomUserClaims(uid, {rol: req.body.rol}) // setea el rol del usuario
                         .then(() => { // guarda los datos personales en la base de datos
                             db.collection("usuarios").doc(uid).set({
-                                ...req.body.usuario,
+                                ...req.body.datos,
                             })
                                 .then(() => {
                                     // storage.ref().child("avatar/" + uid).put(req.body.foto) // guarda la foto de perfil
