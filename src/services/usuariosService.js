@@ -12,21 +12,22 @@ module.exports = (db, auth, storage) => {
                 });
         },
         getUsuarios: (req, res, next) => {
-            db.collection("usuarios").get()
-                .then(snapshot => {
-                    let usuariosResumidos = [];
-                    snapshot.forEach(usuario => {
-                        let usuarioResumido = {
-                            id: usuario.id,
-                            rol: usuario.data().rol,
-                            nombre: usuario.data().apellido + " " + usuario.data().nombre,
-                            foto: usuario.data().foto,
-                        };
-                        usuariosResumidos.push(usuarioResumido);
-                    });
-                    res.send(usuariosResumidos);
+            auth.listUsers()
+                .then(listUsersResult => {
+                    let usuarios = [];
+                    listUsersResult.users.forEach(userRecord => {
+                        usuarios.push({
+                            id: userRecord.uid,
+                            rol: userRecord.customClaims.rol,
+                            nombre: userRecord.displayName,
+                            email: userRecord.email,
+                            foto: userRecord.photoURL,
+                        });
+                    });     
+                    res.status(200).send(usuarios);
                 }).catch(error => {
-                    console.log("Error al recuperar usuarios", error);
+                    console.log(error);
+                    res.status(500).send(error);
                 });
         },
         addUsuario: (req, res, next) => {
