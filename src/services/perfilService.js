@@ -23,7 +23,6 @@ module.exports = (db, auth, storage) => {
                                 provincia: snapshot.data().provincia,
                             }
                             response.datos = datos;
-                            console.log(response);
                             res.send(response);
                         }).catch(error => {
                             console.log(error);
