@@ -71,7 +71,7 @@ function iniciarSesion(email, password, res){
            (sessionCookie) => {
                const options = { maxAge: expiresIn, httpOnly: true };
                res.cookie("session", sessionCookie, options);
-               //res.redirect('/');
+               res.redirect('/');
            },
            (error) => {
                res.status(401).send("REQUEST DESAUTORIZADO!");
