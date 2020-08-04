@@ -50,7 +50,7 @@ var cliente = process.env['CLIENTE'];
 if (!cliente) {
   throw new Error('The $CLIENTE environment variable was not found!');
 }
-cliente = JSON.stringify(cliente);
+cliente = JSON.parse(cliente);
 
 firebase.initializeApp(cliente);
 
