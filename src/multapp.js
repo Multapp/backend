@@ -51,8 +51,60 @@ if (!cliente) {
 }
 cliente = JSON.stringify(cliente);
 
+
+// Creating session cookie
+function iniciarSesion(email, password, res){
+    if (firebase.auth().currentUser) {
+        firebase.auth().signOut();
+    }
+    firebase.auth().signInWithEmailAndPassword(email, password)
+    .then(({ user }) => {
+    return user.getIdToken().then((idToken) => {
+       const expiresIn = 60 * 60 * 8 * 1000;
+       admin
+           .auth()
+           .createSessionCookie(idToken, { expiresIn })
+           .then(
+           (sessionCookie) => {
+               const options = { maxAge: expiresIn, httpOnly: true };
+               res.cookie("session", sessionCookie, options);
+               //res.redirect('/');
+           },
+           (error) => {
+               res.status(401).send("REQUEST DESAUTORIZADO!");
+           }
+       );
+       return;
+    });
+    })
+    .then(() => {
+        return firebase.auth().signOut();
+    }).catch(function(error) {
+        // Handle Errors
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode === 'auth/wrong-password') {
+            res.jsonp({
+                fail : true, 
+                mensaje : "CONTRASEÑA INCORRECTA"
+            });
+        } else {
+            console.log(error);
+            res.jsonp({
+                fail : true, 
+                mensaje : errorMessage
+            });
+        }
+        // [END_EXCLUDE]
+    });
+}
+
+
+
 // Set session cookie
 router.post('/sessionLogin', (req, res) => {
+    /* 
     const idToken = req.body.idToken.toString();
     const expiresIn = 60 * 60 * 8 * 1000;
     admin
@@ -66,7 +118,12 @@ router.post('/sessionLogin', (req, res) => {
         (error) => {
             res.status(401).send("UNAUTHORIZED REQUEST!");
         }
-    );
+    ); 
+    */
+   let email = req.body.email.toString();
+   let password = req.body.password.toString();
+   iniciarSesion(email, password, res);
+
 });
 
 // Clear session cookie
