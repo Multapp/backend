@@ -103,26 +103,18 @@ module.exports = (db, auth, storage) => {
         deleteUsuario: (req, res, next) => {
             // FALTA
             // eliminar la foto de perfil del usuario (cuando sepa como cargar una)
-            let uid;
-            db.collection("usuarios").doc(req.query.id).get() // trae el uid guardado en firestore
-                .then(snapshot => {
-                    uid = snapshot.data().uid;
-                    auth.deleteUser(uid) // elimina la cuenta de authentication
+            auth.deleteUser(req.query.id) // elimina la cuenta de authentication
+                .then(() => {
+                    db.collection("usuarios").doc(req.query.id).delete() // elimina los datos del usuario en firestore
                         .then(() => {
-                            db.collection("usuarios").doc(req.query.id).delete() // elimina todos los datos del usuario en firestore
-                                .then(() => {
-                                    res.status(200).send("Usuario " + req.query.id + " eliminado correctamente");
-                                }).catch(error => {
-                                    console.log(error);
-                                    res.status(500).send("Error al eliminar datos de usuario " + res.query.id, error);
-                                });
+                            res.status(200).send("Usuario " + req.query.id + " eliminado correctamente");
                         }).catch(error => {
                             console.log(error);
-                            res.status(500).send("Error al eliminar cuenta " + uid, error);
+                            res.status(500).send(error);
                         });
                 }).catch(error => {
                     console.log(error);
-                    res.status(500).send("Error al recuperar el UID del registro " + req.query.id, error);
+                    res.status(500).send(error);
                 });
         }
     }
