@@ -63,20 +63,9 @@ function iniciarSesion(email, password, res){
     firebase.auth().signInWithEmailAndPassword(email, password)
     .then(({ user }) => {
     return user.getIdToken().then((idToken) => {
-       const expiresIn = 60 * 60 * 8 * 1000;
-       admin
-           .auth()
-           .createSessionCookie(idToken, { expiresIn })
-           .then(
-           (sessionCookie) => {
-               const options = { maxAge: expiresIn, httpOnly: true };
-               res.cookie("session", sessionCookie, options);
-               res.redirect('/');
-           },
-           (error) => {
-               res.status(401).send("REQUEST DESAUTORIZADO!");
-           }
-       );
+       //const expiresIn = 60 * 60 * 8 * 1000;
+       res.send(idToken);
+       res.end(JSON.stringify({status: 'success'}));
        return;
     });
     })
