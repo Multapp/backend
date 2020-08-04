@@ -4,6 +4,7 @@ const admin = require('firebase-admin');
 const healthCheck = require('./controllers/healthCheck.js')
 const MULTAS_COLL = 'multas';
 require('dotenv/config');
+const firebase = require("firebase");
 
 // Request $CREDS environment variable
 const keysEnvVar = process.env['CREDS'];
@@ -50,6 +51,8 @@ if (!cliente) {
   throw new Error('The $CLIENTE environment variable was not found!');
 }
 cliente = JSON.stringify(cliente);
+
+firebase.initializeApp(cliente);
 
 
 // Creating session cookie
