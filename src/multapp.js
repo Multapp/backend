@@ -64,8 +64,11 @@ function iniciarSesion(email, password, res){
     .then(({ user }) => {
     return user.getIdToken().then((idToken) => {
        //const expiresIn = 60 * 60 * 8 * 1000;
-       res.send(idToken);
-       res.end(JSON.stringify({status: 'success'}));
+       res.end(JSON.stringify({
+           idToken: idToken,
+           displayName: user.displayName,
+           photoURL: user.photoURL
+        }));
        return;
     });
     })
