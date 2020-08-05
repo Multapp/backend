@@ -54,45 +54,41 @@ cliente = JSON.parse(cliente);
 
 firebase.initializeApp(cliente);
 
-
 // Creating session cookie
 function iniciarSesion(email, password, res){
     if (firebase.auth().currentUser) {
         firebase.auth().signOut();
     }
     firebase.auth().signInWithEmailAndPassword(email, password)
-    .then(({ user }) => {
-    return user.getIdToken().then((idToken) => {
-       //const expiresIn = 60 * 60 * 8 * 1000;
-       res.end(JSON.stringify({
-           idToken: idToken,
-           displayName: user.displayName,
-           photoURL: user.photoURL
-        }));
-       return;
-    });
-    })
-    .then(() => {
-        return firebase.auth().signOut();
-    }).catch(function(error) {
-        // Handle Errors
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // [START_EXCLUDE]
-        if (errorCode === 'auth/wrong-password') {
-            res.jsonp({
-                fail : true, 
-                mensaje : "CONTRASEÑA INCORRECTA"
+        .then(({ user }) => {
+            return user.getIdToken().then(idToken => {
+                //const expiresIn = 60 * 60 * 8 * 1000;
+                res.end(JSON.stringify({
+                    idToken: idToken,
+                    displayName: user.displayName,
+                    photoURL: user.photoURL
+                }));
+                return;
             });
-        } else {
-            console.log(error);
-            res.jsonp({
-                fail : true, 
-                mensaje : errorMessage
+        })
+            .then(() => {
+                return firebase.auth().signOut();
+            }).catch(error => {
+                var errorCode = error.code;
+                var errorMessage = error.message;
+                if (errorCode === 'auth/wrong-password') {
+                    res.jsonp({
+                        fail : true, 
+                        mensaje : "CONTRASEÑA INCORRECTA"
+                    });
+                } else {
+                    console.log(error);
+                    res.jsonp({
+                        fail : true, 
+                        mensaje : errorMessage
+                    });
+                }
             });
-        }
-        // [END_EXCLUDE]
-    });
 }
 
 
