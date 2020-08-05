@@ -61,50 +61,38 @@ function iniciarSesion(email, password, res){
         firebase.auth().signOut();
     }
     firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-            return user.getIdToken()
-                .then(idToken => {
-                    auth.getUserByEmail(email)
-                        .then(userRecord => {
-                            const data = {
-                                idToken: idToken,
-                                uid: userRecord.uid,
-                                email: userRecord.email,
-                                rol: userRecord.customClaims.rol,
-                                displayName: userRecord.displayName,
-                                photoURL: userRecord.photoURL,
-                            };
-                            res.send(data);
-                            res.end(JSON.stringify({status: 'success'}));
-                        }).catch(error => {
-                            console.log(error);
-                            res.status(500).send(error);
-                        });
-                    //const expiresIn = 60 * 60 * 8 * 1000;
-                    
-                    // res.send(idToken);
-                    
-                    // return;
-                });
-        })
-            .then(() => {
-                return firebase.auth().signOut();
-            }).catch(function(error) {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                if (errorCode === 'auth/wrong-password') {
-                    res.jsonp({
-                        fail : true, 
-                        mensaje : "CONTRASEÑA INCORRECTA"
-                    });
-                } else {
-                    console.log(error);
-                    res.jsonp({
-                        fail : true, 
-                        mensaje : errorMessage
-                    });
-                }
+    .then(({ user }) => {
+    return user.getIdToken().then((idToken) => {
+       //const expiresIn = 60 * 60 * 8 * 1000;
+       res.end(JSON.stringify({
+           idToken: idToken,
+           displayName: user.displayName,
+           photoURL: user.photoURL
+        }));
+       return;
+    });
+    })
+    .then(() => {
+        return firebase.auth().signOut();
+    }).catch(function(error) {
+        // Handle Errors
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // [START_EXCLUDE]
+        if (errorCode === 'auth/wrong-password') {
+            res.jsonp({
+                fail : true, 
+                mensaje : "CONTRASEÑA INCORRECTA"
             });
+        } else {
+            console.log(error);
+            res.jsonp({
+                fail : true, 
+                mensaje : errorMessage
+            });
+        }
+        // [END_EXCLUDE]
+    });
 }
 
 
