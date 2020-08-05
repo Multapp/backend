@@ -65,8 +65,11 @@ function iniciarSesion(email, password, res){
                 //const expiresIn = 60 * 60 * 8 * 1000;
                 res.end(JSON.stringify({
                     idToken: idToken,
+                    uid: user.uid,
+                    email: user.email,
+                    rol: user.customClaims.rol,
                     displayName: user.displayName,
-                    photoURL: user.photoURL
+                    photoURL: user.photoURL,
                 }));
                 return;
             });
