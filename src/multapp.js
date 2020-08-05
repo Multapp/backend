@@ -63,14 +63,20 @@ function iniciarSesion(email, password, res){
         .then(({ user }) => {
             return user.getIdToken().then(idToken => {
                 //const expiresIn = 60 * 60 * 8 * 1000;
-                res.end(JSON.stringify({
-                    idToken: idToken,
-                    uid: user.uid,
-                    email: user.email,
-                    rol: user.customClaims.rol,
-                    displayName: user.displayName,
-                    photoURL: user.photoURL,
-                }));
+                auth.getUserByEmail(email)
+                    .then(userRecord => {
+                        res.send({
+                            idToken: idToken,
+                            uid: userRecord.uid,
+                            email: userRecord.email,
+                            rol: userRecord.customClaims.rol,
+                            displayName: userRecord.displayName,
+                            photoURL: userRecord.photoURL,
+                        });
+                    }).catch(error => {
+                        console.log(error);
+                        res.send(error);
+                    });
                 return;
             });
         })
