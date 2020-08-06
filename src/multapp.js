@@ -33,6 +33,10 @@ const storage = admin.storage();
 // const storage = firebase.storage().ref();
 // console.log(storage);
 
+
+const autenticacionService = require('./services/autenticacionService.js')(db, auth, firebase)
+const autenticacionController = require('./controllers/autenticacionController.js')(autenticacionService)
+
 const multasService = require('./services/multasService.js')(db)
 const multasController = require('./controllers/multasController.js')(multasService)
 
@@ -54,83 +58,18 @@ cliente = JSON.parse(cliente);
 
 firebase.initializeApp(cliente);
 
-// Creating session cookie
-function iniciarSesion(email, password, res){
-    if (firebase.auth().currentUser) {
-        firebase.auth().signOut();
-    }
-    firebase.auth().signInWithEmailAndPassword(email, password)
-        .then(({ user }) => {
-            return user.getIdToken().then(idToken => {
-                //const expiresIn = 60 * 60 * 8 * 1000;
-                auth.getUserByEmail(email)
-                    .then(userRecord => {
-                        res.send({
-                            idToken: idToken,
-                            uid: userRecord.uid,
-                            email: userRecord.email,
-                            rol: userRecord.customClaims.rol,
-                            displayName: userRecord.displayName,
-                            photoURL: userRecord.photoURL,
-                        });
-                    }).catch(error => {
-                        console.log(error);
-                        res.send(error);
-                    });
-                return;
-            });
-        })
-            .then(() => {
-                return firebase.auth().signOut();
-            }).catch(error => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                if (errorCode === 'auth/wrong-password') {
-                    res.jsonp({
-                        fail : true, 
-                        mensaje : "CONTRASEÑA INCORRECTA"
-                    });
-                } else {
-                    console.log(error);
-                    res.jsonp({
-                        fail : true, 
-                        mensaje : errorMessage
-                    });
-                }
-            });
-}
 
 
+/*** Endpoints de autenticación ***/
 
-// Set session cookie
-router.post('/sessionLogin', (req, res) => {
-    /* 
-    const idToken = req.body.idToken.toString();
-    const expiresIn = 60 * 60 * 8 * 1000;
-    admin
-        .auth().createSessionCookie(idToken, { expiresIn })
-        .then(
-        (sessionCookie) => {
-            const options = { maxAge: expiresIn, httpOnly: true };
-            res.cookie("session", sessionCookie, options);
-            res.end(JSON.stringify({ status: "Success" }));
-        },
-        (error) => {
-            res.status(401).send("UNAUTHORIZED REQUEST!");
-        }
-    ); 
-    */
-   let email = req.body.email.toString();
-   let password = req.body.password.toString();
-   iniciarSesion(email, password, res);
+// iniciar sesion
+router.post('/sessionLogin', autenticacionController.sessionLogin);
 
-});
+//cerrar sesion
+router.get('/sessionLogout', autenticacionController.sessionLogout)
 
-// Clear session cookie
-router.get('/sessionLogout', (req, res) => {
-    res.clearCookie("session");
-    //res.redirect("/");
-})
+// cambiar contraseña
+router.post("/cambiarContrasena", autenticacionController.cambiarContrasena);
 
 /*** Endpoints de multas ***/
 
@@ -184,8 +123,5 @@ router.delete("/deleteUsuario", usuariosController.deleteUsuario);
 
 // obtener el perfil del usuario actual
 router.get("/getPerfil", perfilController.getPerfil);
-
-// cambiar contraseña
-router.post("/cambiarContrasena", perfilController.cambiarContrasena);
 
 module.exports = router;

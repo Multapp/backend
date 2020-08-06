@@ -33,18 +33,5 @@ module.exports = (db, auth, storage) => {
                     res.status(500).send("Error al obtener datos de usuario");
                 });
         },
-        cambiarContrasena: (req, res, next) => {
-            // FALTA HACER
-            // verificar que req.body.contrasenaActual sea realmente la contraseña actual
-            auth.updateUser(req.body.uid, {
-                password: req.body.contrasenaNueva,
-            })
-                .then(() => {
-                    res.status(200).send("Contraseña actualizada exitosament");
-                }).catch(error => {
-                    console.log(error);
-                    res.status(500).send("No se pudo cambiar la contraseña");
-                });
-        },
     }
 }
