@@ -9,5 +9,8 @@ module.exports = function(autenticacionService) {
         cambiarContrasena: function (req, res, next) {
             autenticacionService.cambiarContrasena(req, res, next)
         },
+        recuperarContrasena: function (req, res, next) {
+            autenticacionService.recuperarContrasena(req, res, next)
+        },
     }
 }

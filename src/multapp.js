@@ -71,6 +71,9 @@ router.get('/sessionLogout', autenticacionController.sessionLogout)
 // cambiar contraseña
 router.post("/cambiarContrasena", autenticacionController.cambiarContrasena);
 
+// cambiar contraseña
+router.post("/recuperarContrasena", autenticacionController.recuperarContrasena);
+
 /*** Endpoints de multas ***/
 
 // obtener multas resumidas
