@@ -25,6 +25,12 @@ module.exports = (db, auth, firebase) => {
                     return;
                 });
             })
+            .catch(error => {
+                console.log(error);
+                res.status(401).json({
+                    message: error.code,
+                });
+            })
                 .then(() => {
                     return firebase.auth().signOut();
                 }).catch(error => {
