@@ -1,16 +1,39 @@
 module.exports = (db, auth, storage) => {
     return {
         getUsuarioById: (req, res, next) => {
-            db.collection("usuarios").doc(req.query.id).get()
-                .then(snapshot => {
-                    res.send({
-                        id: snapshot.id,
-                        ...snapshot.data(),
+            auth.getUser(req.query.id)
+            .then(userRecord => {
+                db.collection("usuarios").doc(userRecord.uid).get()
+                    .then(snapshot => {
+                        const datos = {
+                            id: userRecord.uid,
+                            foto: userRecord.photoURL,
+                            displayName: userRecord.displayName,
+                            rol: userRecord.customClaims.rol,
+                            email: userRecord.email,
+                            dni: snapshot.data().dni,
+                            apellido: snapshot.data().apellido,
+                            nombre: snapshot.data().nombre,
+                            fechaNacimiento: snapshot.data().fechaNacimiento,
+                            sexo: snapshot.data().sexo,
+                            telefono: userRecord.phoneNumber,
+                            direccion: snapshot.data().calle + " " + snapshot.data().numero,
+                            calle: snapshot.data().calle,
+                            numero: snapshot.data().numero,
+                            piso: snapshot.data().piso,
+                            departamento: snapshot.data().departamento,
+                            localidad: snapshot.data().localidad,
+                            provincia: snapshot.data().provincia,
+                        }
+                        res.send(datos);
+                    }).catch(error => {
+                        console.log(error);
+                        res.send(error);
                     });
-                }).catch(error => {
-                    console.log(error);
-                    res.send(error.code);
-                });
+            }).catch(error => {
+                console.log(error);
+                res.status(500).send("Error al obtener datos de usuario");
+            });
         },
         getUsuarios: (req, res, next) => {
             auth.listUsers()
