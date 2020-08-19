@@ -64,7 +64,7 @@ module.exports = (db, auth, storage) => {
                 email: req.body.email,
                 password: password,
                 displayName: req.body.datos.nombre + " " + req.body.datos.apellido,
-                phoneNumber: "+54" + req.body.telefono,
+                phoneNumber: req.body.telefono,
             })
                 .then(userRecord => {
                     let uid = userRecord.uid;
@@ -114,7 +114,7 @@ module.exports = (db, auth, storage) => {
             // mandarle correo al tipo con el cambio de correo
             auth.updateUser(req.body.id, {
                 email: req.body.email,
-                phoneNumber: "+54" + req.body.telefono,
+                phoneNumber: req.body.telefono,
                 displayName: req.body.datos.nombre + " " + req.body.datos.apellido,
             })
                 .then(() => {
