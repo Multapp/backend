@@ -99,11 +99,16 @@ module.exports = (db, auth, storage) => {
                         .then(() => {
                             res.status(200).send("Usuario " + req.body.id + " actualizado correctamente");
                         }).catch(error => {
-                            res.send("Error al actualizar usuario " + req.body.id, error);
+                            console.log(error);
+                            res.status(500).send({
+                                message: error.code,
+                            });
                         });
                 }).catch(error => {
                     console.log(error);
-                    res.status(500).send(error);
+                    res.status(500).send({
+                        message: error.code,
+                    });
                 });
             
         },
