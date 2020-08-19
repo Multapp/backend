@@ -8,7 +8,8 @@ module.exports = (db, auth, storage) => {
                         ...snapshot.data(),
                     });
                 }).catch(error => {
-                    console.log("Error al recuperar usuario " + req.query.id, error);
+                    console.log(error);
+                    res.send(error.code);
                 });
         },
         getUsuarios: (req, res, next) => {
@@ -67,15 +68,21 @@ module.exports = (db, auth, storage) => {
                                         // })
                                 }).catch(error => {
                                     console.log(error);
-                                    res.status(500).send(error);
+                                    res.status(500).send({
+                                        message: error.code,
+                                    });
                                 });
                         }).catch(error => {
                             console.log(error);
-                            res.status(500).send(error);
+                            res.status(500).send({
+                                message: error.code,
+                            });
                         });
                 }).catch(error => {
                     console.log(error);
-                    res.status(500).send(error);
+                    res.status(500).send({
+                        message: error.code,
+                    });
                 });
         },
         editUsuario: (req, res, next) => {
