@@ -37,7 +37,7 @@ const storage = admin.storage();
 const autenticacionService = require('./services/autenticacionService.js')(db, auth, firebase)
 const autenticacionController = require('./controllers/autenticacionController.js')(autenticacionService)
 
-const multasService = require('./services/multasService.js')(db)
+const multasService = require('./services/multasService.js')(db, auth, storage)
 const multasController = require('./controllers/multasController.js')(multasService)
 
 const usuariosService = require('./services/usuariosService.js')(db, auth, storage)

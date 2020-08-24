@@ -1,14 +1,27 @@
-module.exports = function (db) {
+module.exports = function (db, auth, storage) {
     return {
         getMultaById: function (req, res, next) {
             db.collection("multas").doc(req.query.id).get()
                 .then(snapshot => {
-                    res.send({
-                        id: snapshot.id,
-                        ...snapshot.data(),
-                    });
+                    auth.getUser(snapshot.data().idInspector)
+                        .then(userRecord => {
+                            response = {
+                                id: snapshot.id,
+                                ...snapshot.data(),
+                                nombreInspector: userRecord.displayName,
+                            };
+                            res.send(response);
+                        }).catch(error => {
+                            console.log(error);
+                            res.status(500).send({
+                                message: error.code,
+                            });
+                        });
                 }).catch(error => {
-                    console.log("Error al recuperar multa", error);
+                    console.log(error);
+                    res.status(500).send({
+                        message: error.code,
+                    });
                 })
         },
         getMultas: function (req, res, next) {
