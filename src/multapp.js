@@ -5,6 +5,7 @@ const healthCheck = require('./controllers/healthCheck.js')
 const MULTAS_COLL = 'multas';
 require('dotenv/config');
 const firebase = require("firebase");
+const multer = require('multer');
 
 // Request $CREDS environment variable
 const keysEnvVar = process.env['CREDS'];
@@ -16,8 +17,10 @@ const keys = JSON.parse(keysEnvVar);
 // Creating Cloud Firestore instance
 admin.initializeApp({
     credential: admin.credential.cert(keys),
-    storageBucket: process.env.STORAGE_BUCKET,
-});
+    storageBucket: "node-firebase-example-ffff0.appspot.com"
+  });
+var bucket = admin.storage().bucket();
+var storage = admin.storage();
 
 // referencia a auth
 const auth = admin.auth();
@@ -27,8 +30,8 @@ const db = admin.firestore();
 
 // esto de storage no anda, tengo que ver como puta hacer
 // referencia a cloud storage
-const storage = admin.storage();
-// const storage = require('@google-cloud/storage');
+//const storage = admin.storage();
+ const { Storage } = require('@google-cloud/storage');
 // const firebase = require("firebase");
 // const storage = firebase.storage().ref();
 // console.log(storage);
@@ -126,5 +129,53 @@ router.delete("/deleteUsuario", usuariosController.deleteUsuario);
 
 // obtener el perfil del usuario actual
 router.get("/getPerfil", perfilController.getPerfil);
+
+const uploader = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+      fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
+  },
+});
+
+// Upload endpoint to send file to Firebase storage bucket
+router.post('/upload', uploader.single('image'), async (req, res, next) => {
+  try {
+    if (!req.file) {
+      res.status(400).send('Error, could not upload file');
+      return;
+    }
+
+    // Create new blob in the bucket referencing the file
+    const blob = bucket.file(req.file.originalname);
+
+    // Create writable stream and specifying file mimetype
+    const blobWriter = blob.createWriteStream({
+      metadata: {
+        contentType: req.file.mimetype,
+      },
+    });
+
+    blobWriter.on('error', (err) => next(err));
+
+    blobWriter.on('finish', () => {
+      // Assembling public URL for accessing the file via HTTP
+      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${
+        bucket.name
+      }/o/${encodeURI(blob.name)}?alt=media`;
+
+      // Return the file name and its public URL
+      res
+        .status(200)
+        .send({ fileName: req.file.originalname, fileLocation: publicUrl });
+    });
+
+    // When there is no more data to be consumed from the stream
+    blobWriter.end(req.file.buffer);
+  } catch (error) {
+    res.status(400).send(`Error, could not upload file: ${error}`);
+    return;
+  }
+});
+
 
 module.exports = router;
