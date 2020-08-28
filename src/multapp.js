@@ -20,7 +20,7 @@ admin.initializeApp({
     storageBucket: "node-firebase-example-ffff0.appspot.com"
   });
 var bucket = admin.storage().bucket();
-var storage = admin.storage();
+const uploader = require('./services/imageService.js')(bucket)
 
 // referencia a auth
 const auth = admin.auth();
@@ -36,17 +36,23 @@ const db = admin.firestore();
 // const storage = firebase.storage().ref();
 // console.log(storage);
 
+const imageMiddleware = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+      fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
+  },
+});
 
 const autenticacionService = require('./services/autenticacionService.js')(db, auth, firebase)
 const autenticacionController = require('./controllers/autenticacionController.js')(autenticacionService)
 
-const multasService = require('./services/multasService.js')(db, auth, storage)
+const multasService = require('./services/multasService.js')(db, auth, uploader)
 const multasController = require('./controllers/multasController.js')(multasService)
 
-const usuariosService = require('./services/usuariosService.js')(db, auth, storage)
+const usuariosService = require('./services/usuariosService.js')(db, auth, uploader)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
-const perfilService = require('./services/perfilService.js')(db, auth, storage)
+const perfilService = require('./services/perfilService.js')(db, auth, uploader)
 const perfilController = require('./controllers/perfilController.js')(perfilService)
 
 //HEALTH
@@ -117,7 +123,8 @@ router.get("/getUsuarios", usuariosController.getUsuarios);
 router.get("/getUsuario", usuariosController.getUsuarioById);
 
 // crear un usuario
-router.post("/addUsuario", usuariosController.addUsuario);
+// imageMiddleware agrega a req.file el archivo que se manda en el parametro 'image'
+router.post("/addUsuario", imageMiddleware.single('image'), usuariosController.addUsuario);
 
 // editar un usuario
 router.post("/editUsuario", usuariosController.editUsuario);
@@ -129,53 +136,5 @@ router.delete("/deleteUsuario", usuariosController.deleteUsuario);
 
 // obtener el perfil del usuario actual
 router.get("/getPerfil", perfilController.getPerfil);
-
-const uploader = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-      fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
-  },
-});
-
-// Upload endpoint to send file to Firebase storage bucket
-router.post('/upload', uploader.single('image'), async (req, res, next) => {
-  try {
-    if (!req.file) {
-      res.status(400).send('Error, could not upload file');
-      return;
-    }
-
-    // Create new blob in the bucket referencing the file
-    const blob = bucket.file(req.file.originalname);
-
-    // Create writable stream and specifying file mimetype
-    const blobWriter = blob.createWriteStream({
-      metadata: {
-        contentType: req.file.mimetype,
-      },
-    });
-
-    blobWriter.on('error', (err) => next(err));
-
-    blobWriter.on('finish', () => {
-      // Assembling public URL for accessing the file via HTTP
-      const publicUrl = `https://firebasestorage.googleapis.com/v0/b/${
-        bucket.name
-      }/o/${encodeURI(blob.name)}?alt=media`;
-
-      // Return the file name and its public URL
-      res
-        .status(200)
-        .send({ fileName: req.file.originalname, fileLocation: publicUrl });
-    });
-
-    // When there is no more data to be consumed from the stream
-    blobWriter.end(req.file.buffer);
-  } catch (error) {
-    res.status(400).send(`Error, could not upload file: ${error}`);
-    return;
-  }
-});
-
 
 module.exports = router;

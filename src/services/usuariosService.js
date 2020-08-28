@@ -1,4 +1,4 @@
-module.exports = (db, auth, storage) => {
+module.exports = (db, auth, uploader) => {
     return {
         getUsuarioById: (req, res, next) => {
             auth.getUser(req.query.id)
@@ -54,7 +54,7 @@ module.exports = (db, auth, storage) => {
                     res.status(500).send(error);
                 });
         },
-        addUsuario: (req, res, next) => {
+        addUsuario: (req, res, storage) => {
             // aca tambien habria que:
             // guardar la foto del tipo en storage
             // mandarle correo al tipo con su contraseña
@@ -74,6 +74,7 @@ module.exports = (db, auth, storage) => {
                                 ...req.body.datos,
                             })
                                 .then(() => {
+                                    res.send(uploader("/avatar",req, res, next));
                                     // storage.ref().child("avatar/" + uid).put(req.body.foto) // guarda la foto de perfil
                                     //     .then(snapshot => {
                                     //         console.log(snapshot);
