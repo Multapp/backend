@@ -20,7 +20,7 @@ admin.initializeApp({
     storageBucket: "node-firebase-example-ffff0.appspot.com"
   });
 var bucket = admin.storage().bucket();
-const uploader = require('./services/imageService.js')(bucket)
+const imageService = require('./services/imageService.js')(bucket)
 
 // referencia a auth
 const auth = admin.auth();
@@ -46,10 +46,10 @@ const imageMiddleware = multer({
 const autenticacionService = require('./services/autenticacionService.js')(db, auth, firebase)
 const autenticacionController = require('./controllers/autenticacionController.js')(autenticacionService)
 
-const multasService = require('./services/multasService.js')(db, auth, uploader)
+const multasService = require('./services/multasService.js')(db, auth, imageService)
 const multasController = require('./controllers/multasController.js')(multasService)
 
-const usuariosService = require('./services/usuariosService.js')(db, auth, uploader)
+const usuariosService = require('./services/usuariosService.js')(db, auth, imageService)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
 const perfilService = require('./services/perfilService.js')(db, auth)

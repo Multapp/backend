@@ -1,4 +1,4 @@
-module.exports = (db, auth, uploader) => {
+module.exports = (db, auth, imageService) => {
     return {
         getUsuarioById: (req, res, next) => {
             auth.getUser(req.query.id)
@@ -88,7 +88,7 @@ module.exports = (db, auth, uploader) => {
                                     // aca intente que la funcion devuelva la public url del archivo
                                     // y ahi le metia derecho en el photoURL de auth
                                     // pero no probe todavia
-                                    const publicURL = uploader.uploader("/avatar", req, res, null);
+                                    const publicURL = imageService.uploader("/avatar/", req, res, null);
                                     console.log(publicURL);
                                     // storage.ref().child("avatar/" + uid).put(req.body.foto) // guarda la foto de perfil
                                     //     .then(snapshot => {

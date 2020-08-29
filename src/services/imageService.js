@@ -7,7 +7,7 @@ module.exports = (bucket) => {
             return;
           }
           // Create new blob in the bucket referencing the file
-          const blob = bucket.file(folder + req.body.uid);
+          const blob = bucket.file(folder + req.body.id);
       
           // Create writable stream and specifying file mimetype
           const blobWriter = blob.createWriteStream({
