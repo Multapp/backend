@@ -16,7 +16,7 @@ module.exports = (bucket) => {
             },
           });
       
-          blobWriter.on('error', (err) => next(err));
+        //   blobWriter.on('error', (err) => next(err));
       
           blobWriter.on('finish', () => {
             // Assembling public URL for accessing the file via HTTP
@@ -32,6 +32,7 @@ module.exports = (bucket) => {
       
           // When there is no more data to be consumed from the stream
           blobWriter.end(req.file.buffer);
+        //   return publicUrl;
         } catch (error) {
           res.status(400).send(`Error, could not upload file: ${error}`);
           return;

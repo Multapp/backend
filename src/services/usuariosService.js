@@ -58,12 +58,13 @@ module.exports = (db, auth, uploader) => {
             // aca tambien habria que:
             // guardar la foto del tipo en storage
             // mandarle correo al tipo con su contraseña
+            console.log(req);
             let password = (Math.floor(Math.random() * (1000000 - 100000) ) + 100000).toString();
             console.log(password);
             auth.createUser({ // crea el usuario
                 email: req.body.email,
                 password: password,
-                displayName: req.body.datos.nombre + " " + req.body.datos.apellido,
+                displayName: req.body.nombre + " " + req.body.apellido,
                 phoneNumber: req.body.telefono,
             })
                 .then(userRecord => {
@@ -71,10 +72,24 @@ module.exports = (db, auth, uploader) => {
                     auth.setCustomUserClaims(uid, {rol: req.body.rol}) // setea el rol del usuario
                         .then(() => { // guarda los datos personales en la base de datos
                             db.collection("usuarios").doc(uid).set({
-                                ...req.body.datos,
+                                dni: req.body.dni,
+                                apellido: req.body.apellido,
+                                nombre: req.body.nombre,
+                                fechaNacimiento: req.body.fechaNacimiento,
+                                sexo: req.body.sexo,
+                                calle: req.body.calle,
+                                numero: req.body.numero,
+                                piso: req.body.piso,
+                                departamento: req.body.departamento,
+                                localidad: req.body.localidad,
+                                provincia: req.body.provincia,                    
                             })
                                 .then(() => {
-                                    res.send(uploader("/avatar",req, res, next));
+                                    // aca intente que la funcion devuelva la public url del archivo
+                                    // y ahi le metia derecho en el photoURL de auth
+                                    // pero no probe todavia
+                                    const publicURL = uploader.uploader("/avatar", req, res, null);
+                                    console.log(publicURL);
                                     // storage.ref().child("avatar/" + uid).put(req.body.foto) // guarda la foto de perfil
                                     //     .then(snapshot => {
                                     //         console.log(snapshot);

@@ -52,7 +52,7 @@ const multasController = require('./controllers/multasController.js')(multasServ
 const usuariosService = require('./services/usuariosService.js')(db, auth, uploader)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
-const perfilService = require('./services/perfilService.js')(db, auth, uploader)
+const perfilService = require('./services/perfilService.js')(db, auth)
 const perfilController = require('./controllers/perfilController.js')(perfilService)
 
 //HEALTH
@@ -74,7 +74,7 @@ firebase.initializeApp(cliente);
 // iniciar sesion
 router.post('/sessionLogin', autenticacionController.sessionLogin);
 
-//cerrar sesion
+// cerrar sesion
 router.get('/sessionLogout', autenticacionController.sessionLogout)
 
 // cambiar contraseña
@@ -124,7 +124,7 @@ router.get("/getUsuario", usuariosController.getUsuarioById);
 
 // crear un usuario
 // imageMiddleware agrega a req.file el archivo que se manda en el parametro 'image'
-router.post("/addUsuario", imageMiddleware.single('image'), usuariosController.addUsuario);
+router.post("/addUsuario", imageMiddleware.single('file'), usuariosController.addUsuario);
 
 // editar un usuario
 router.post("/editUsuario", usuariosController.editUsuario);
