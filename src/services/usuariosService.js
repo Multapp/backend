@@ -56,9 +56,7 @@ module.exports = (db, auth, imageService) => {
         },
         addUsuario: (req, res, storage) => {
             // aca tambien habria que:
-            // guardar la foto del tipo en storage
             // mandarle correo al tipo con su contraseña
-            console.log(req);
             let password = (Math.floor(Math.random() * (1000000 - 100000) ) + 100000).toString();
             console.log(password);
             auth.createUser({ // crea el usuario
@@ -85,26 +83,25 @@ module.exports = (db, auth, imageService) => {
                                 provincia: req.body.provincia,                    
                             })
                                 .then(() => {
-                                    // aca intente que la funcion devuelva la public url del archivo
-                                    // y ahi le metia derecho en el photoURL de auth
-                                    // pero no probe todavia
-                                    const publicURL = imageService.uploader("/avatar/", req, res, null);
-                                    console.log(publicURL);
-                                    // storage.ref().child("avatar/" + uid).put(req.body.foto) // guarda la foto de perfil
-                                    //     .then(snapshot => {
-                                    //         console.log(snapshot);
-                                            // userRecord.updateUser({ // guarda la referencia a la foto en authentication
-                                            //     // photoURL
-                                            // })
-                                            //     .then(() => {
+                                    imageService.uploader("avatar", uid, req, res, null) // sube su avatar a storage
+                                        .then(publicURL => {
+                                            auth.updateUser(uid, { // asigna la url del avatar al usuario
+                                                photoURL: publicURL,
+                                            })
+                                                .then(() => {
                                                     res.status(201).send("Usuario " + uid + " creado correctamente");
-                                                // }).catch(error => {
-                                                //     res.status(500).send(error);
-                                                // });
-                                        // }).catch(error => {
-                                        //     console.log(error);
-                                        //     res.status(500).send(error);
-                                        // })
+                                                }).catch(error => {
+                                                    console.log(error);
+                                                    res.status(500).send({
+                                                        message: error.code,
+                                                    });
+                                                });
+                                        }).catch(error => {
+                                            console.log(error);
+                                            res.status(500).send({
+                                                message: "aca hubo un error",
+                                            });
+                                        });
                                 }).catch(error => {
                                     console.log(error);
                                     res.status(500).send({
