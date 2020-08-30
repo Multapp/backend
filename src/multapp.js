@@ -5,6 +5,7 @@ const healthCheck = require('./controllers/healthCheck.js')
 const MULTAS_COLL = 'multas';
 require('dotenv/config');
 const firebase = require("firebase");
+const multer = require('multer');
 
 // Request $CREDS environment variable
 const keysEnvVar = process.env['CREDS'];
@@ -16,8 +17,10 @@ const keys = JSON.parse(keysEnvVar);
 // Creating Cloud Firestore instance
 admin.initializeApp({
     credential: admin.credential.cert(keys),
-    storageBucket: process.env.STORAGE_BUCKET,
-});
+    storageBucket: "node-firebase-example-ffff0.appspot.com"
+  });
+var bucket = admin.storage().bucket();
+const imageService = require('./services/imageService.js')(bucket)
 
 // referencia a auth
 const auth = admin.auth();
@@ -27,23 +30,29 @@ const db = admin.firestore();
 
 // esto de storage no anda, tengo que ver como puta hacer
 // referencia a cloud storage
-const storage = admin.storage();
-// const storage = require('@google-cloud/storage');
+//const storage = admin.storage();
+ const { Storage } = require('@google-cloud/storage');
 // const firebase = require("firebase");
 // const storage = firebase.storage().ref();
 // console.log(storage);
 
+const imageMiddleware = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+      fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
+  },
+});
 
 const autenticacionService = require('./services/autenticacionService.js')(db, auth, firebase)
 const autenticacionController = require('./controllers/autenticacionController.js')(autenticacionService)
 
-const multasService = require('./services/multasService.js')(db, auth, storage)
+const multasService = require('./services/multasService.js')(db, auth, imageService)
 const multasController = require('./controllers/multasController.js')(multasService)
 
-const usuariosService = require('./services/usuariosService.js')(db, auth, storage)
+const usuariosService = require('./services/usuariosService.js')(db, auth, imageService)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
-const perfilService = require('./services/perfilService.js')(db, auth, storage)
+const perfilService = require('./services/perfilService.js')(db, auth)
 const perfilController = require('./controllers/perfilController.js')(perfilService)
 
 //HEALTH
@@ -65,7 +74,7 @@ firebase.initializeApp(cliente);
 // iniciar sesion
 router.post('/sessionLogin', autenticacionController.sessionLogin);
 
-//cerrar sesion
+// cerrar sesion
 router.get('/sessionLogout', autenticacionController.sessionLogout)
 
 // cambiar contraseña
@@ -114,7 +123,8 @@ router.get("/getUsuarios", usuariosController.getUsuarios);
 router.get("/getUsuario", usuariosController.getUsuarioById);
 
 // crear un usuario
-router.post("/addUsuario", usuariosController.addUsuario);
+// imageMiddleware agrega a req.file el archivo que se manda en el parametro 'image'
+router.post("/addUsuario", imageMiddleware.single('file'), usuariosController.addUsuario);
 
 // editar un usuario
 router.post("/editUsuario", usuariosController.editUsuario);
