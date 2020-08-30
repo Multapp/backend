@@ -121,7 +121,7 @@ module.exports = (db, auth, imageService) => {
                     });
                 });
         },
-        editUsuario: (req, res, next) => {
+        editUsuario: (req, res, storage) => {
             // aca tambien habria que:
             // guardar la foto nueva en storage
             // mandarle correo al tipo con el cambio de correo
@@ -145,7 +145,27 @@ module.exports = (db, auth, imageService) => {
                         provincia: req.body.provincia,
                     })
                         .then(() => {
-                            res.status(200).send("Usuario " + req.body.id + " actualizado correctamente");
+                            if (req.file) { // si se carga foto se actualiza, sino no
+                                imageService.uploader("avatar", req.body.id, req, res, null) // sube su avatar a storage
+                                        .then(publicURL => {
+                                            auth.updateUser(req.body.id, { // asigna la url del avatar al usuario
+                                                photoURL: publicURL,
+                                            })
+                                                .then(() => {
+                                                    res.status(201).send("Usuario " + req.body.id + " actualizado correctamente");
+                                                }).catch(error => {
+                                                    console.log(error);
+                                                    res.status(500).send({
+                                                        message: error.code,
+                                                    });
+                                                });
+                                        }).catch(error => {
+                                            console.log(error);
+                                            res.status(500).send({
+                                                message: "aca hubo un error",
+                                            });
+                                        });
+                            }
                         }).catch(error => {
                             console.log(error);
                             res.status(500).send({
