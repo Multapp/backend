@@ -48,11 +48,14 @@ module.exports = function (db, auth, storage) {
             db.collection("multas").doc(req.body.id).update({
                 estado: req.body.estado,
                 razon: req.body.razon,
-                idSupervisor: null, // aca tendria que poner el id del supervisor que aprueba la multa
+                idSupervisor: req.body.idSupervisor,
             }).then(snapshot => {
                 res.send("Estado de multa " + req.id + " actualizado con éxito");
             }).catch(error => {
-                res.send("Error al actualizar estado de multa " + req.id);
+                console.log(error);
+                res.status(500).send({
+                    message: error.code,
+                });
             });
         }
     }
