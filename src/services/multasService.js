@@ -4,13 +4,28 @@ module.exports = function (db, auth, storage) {
             db.collection("multas").doc(req.query.id).get()
                 .then(snapshot => {
                     auth.getUser(snapshot.data().idInspector)
-                        .then(userRecord => {
-                            response = {
+                        .then(inspectorRecord => {
+                            let response = {
                                 id: snapshot.id,
                                 ...snapshot.data(),
-                                nombreInspector: userRecord.displayName,
+                                nombreInspector: inspectorRecord.displayName,
+                                nombreSupervisor: "",
                             };
-                            res.send(response);
+                            if (snapshot.data().idSupervisor !== "") {
+                                auth.getUser(snapshot.data().idSupervisor)
+                                    .then(supervisorRecord => {
+                                        response.nombreSupervisor = supervisorRecord.displayName;
+                                        res.send(response);
+                                    }).catch(error => {
+                                        console.log(error);
+                                        res.status(500).send({
+                                            message: error.code,
+                                        });
+                                    });
+                            }
+                            else {
+                                res.send(response);
+                            }
                         }).catch(error => {
                             console.log(error);
                             res.status(500).send({
