@@ -80,14 +80,32 @@ module.exports = (db, auth, firebase) => {
         cambiarContrasena: (req, res, next) => {
             // FALTA HACER
             // verificar que req.body.contrasenaActual sea realmente la contraseña actual
-            auth.updateUser(req.body.uid, {
-                password: req.body.contrasenaNueva,
-            })
-                .then(() => {
-                    res.status(200).send("Contraseña actualizada exitosamente");
+            auth.getUser(req.body.uid)
+                .then(userRecord => {
+                    firebase.auth().signInWithEmailAndPassword(userRecord.email, req.body.contrasenaActual)
+                        .then(({user}) => {
+                            auth.updateUser(req.body.uid, {
+                                password: req.body.contrasenaNueva,
+                            })
+                                .then(() => {
+                                    res.status(200).send("Contraseña actualizada exitosamente");
+                                }).catch(error => {
+                                    console.log(error);
+                                    res.status(401).send({
+                                        message: error.code,
+                                    });
+                                });
+                        }).catch(error => {
+                            console.log(error);
+                            res.status(401).send({
+                                message: error.code,
+                            });
+                        });
                 }).catch(error => {
                     console.log(error);
-                    res.send(error);
+                    res.status(401).send({
+                        message: error.code,
+                    });
                 });
         },
         recuperarContrasena: (req, res, next) => {
