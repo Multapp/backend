@@ -78,13 +78,11 @@ module.exports = (db, auth, firebase) => {
             //res.redirect("/");
         },
         cambiarContrasena: (req, res, next) => {
-            // FALTA HACER
-            // verificar que req.body.contrasenaActual sea realmente la contraseña actual
-            auth.getUser(req.body.uid)
+            auth.getUser(req.body.uid) // obtener el email del usuario
                 .then(userRecord => {
-                    firebase.auth().signInWithEmailAndPassword(userRecord.email, req.body.contrasenaActual)
-                        .then(({user}) => {
-                            auth.updateUser(req.body.uid, {
+                    firebase.auth().signInWithEmailAndPassword(userRecord.email, req.body.contrasenaActual) // iniciar sesion para ver si la contraseña actual es correcta
+                        .then(() => {
+                            auth.updateUser(req.body.uid, { // actualizar la contraseña
                                 password: req.body.contrasenaNueva,
                             })
                                 .then(() => {
