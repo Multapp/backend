@@ -123,15 +123,14 @@ module.exports = (db, auth, imageService) => {
         },
         editUsuario: (req, res, storage) => {
             // aca tambien habria que:
-            // guardar la foto nueva en storage
             // mandarle correo al tipo con el cambio de correo
-            auth.updateUser(req.body.id, {
+            auth.updateUser(req.body.id, { // actualiza los datos en authentication
                 email: req.body.email,
                 phoneNumber: req.body.telefono,
                 displayName: req.body.nombre + " " + req.body.apellido,
             })
                 .then(() => {
-                    db.collection("usuarios").doc(req.body.id).update({
+                    db.collection("usuarios").doc(req.body.id).update({ // actualiza los datos en firestore
                         dni: req.body.dni,
                         apellido: req.body.apellido,
                         nombre: req.body.nombre,
@@ -166,7 +165,7 @@ module.exports = (db, auth, imageService) => {
                                             });
                                         });
                             }
-                            else {
+                            else { // si no se cargo foto, se manda la response asi nomas
                                 res.status(201).send("Usuario " + req.body.id + " actualizado correctamente");
                             }
                         }).catch(error => {
