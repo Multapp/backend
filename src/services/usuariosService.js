@@ -166,6 +166,9 @@ module.exports = (db, auth, imageService) => {
                                             });
                                         });
                             }
+                            else {
+                                res.status(201).send("Usuario " + req.body.id + " actualizado correctamente");
+                            }
                         }).catch(error => {
                             console.log(error);
                             res.status(500).send({
