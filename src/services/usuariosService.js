@@ -83,7 +83,8 @@ module.exports = (db, auth, imageService) => {
                                 provincia: req.body.provincia,
                             })
                                 .then(() => {
-                                    imageService.uploader("avatar", uid, req, res, null) // sube su avatar a storage
+                                    if (req.file) {
+                                        imageService.uploader("avatar", uid, req, res, null) // sube su avatar a storage
                                         .then(publicURL => {
                                             auth.updateUser(uid, { // asigna la url del avatar al usuario
                                                 photoURL: publicURL,
@@ -102,6 +103,10 @@ module.exports = (db, auth, imageService) => {
                                                 message: "aca hubo un error",
                                             });
                                         });
+                                    }
+                                    else {
+                                        res.status(201).send("Usuario " + uid + " creado correctamente");
+                                    }
                                 }).catch(error => {
                                     console.log(error);
                                     res.status(500).send({
