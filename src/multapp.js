@@ -10,7 +10,7 @@ const multer = require('multer');
 // Request $CREDS environment variable
 const keysEnvVar = process.env['CREDS'];
 if (!keysEnvVar) {
-  throw new Error('The $CREDS environment variable was not found!');
+    throw new Error('The $CREDS environment variable was not found!');
 }
 const keys = JSON.parse(keysEnvVar);
 
@@ -18,7 +18,7 @@ const keys = JSON.parse(keysEnvVar);
 admin.initializeApp({
     credential: admin.credential.cert(keys),
     storageBucket: "node-firebase-example-ffff0.appspot.com"
-  });
+});
 var bucket = admin.storage().bucket();
 const imageService = require('./services/imageService.js')(bucket)
 
@@ -31,16 +31,16 @@ const db = admin.firestore();
 // esto de storage no anda, tengo que ver como puta hacer
 // referencia a cloud storage
 //const storage = admin.storage();
- const { Storage } = require('@google-cloud/storage');
+const { Storage } = require('@google-cloud/storage');
 // const firebase = require("firebase");
 // const storage = firebase.storage().ref();
 // console.log(storage);
 
 const imageMiddleware = multer({
-  storage: multer.memoryStorage(),
-  limits: {
-      fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
-  },
+    storage: multer.memoryStorage(),
+    limits: {
+        fileSize: 5 * 1024 * 1024, // keep images size < 5 MB
+    },
 });
 
 const autenticacionService = require('./services/autenticacionService.js')(db, auth, firebase)
@@ -49,7 +49,7 @@ const autenticacionController = require('./controllers/autenticacionController.j
 const multasService = require('./services/multasService.js')(db, auth, imageService)
 const multasController = require('./controllers/multasController.js')(multasService)
 
-const usuariosService = require('./services/usuariosService.js')(db, auth, imageService)
+const usuariosService = require('./services/usuariosService.js')(db, auth, imageService, firebase)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
 const perfilService = require('./services/perfilService.js')(db, auth)
@@ -61,7 +61,7 @@ router.get('/health', healthCheck)
 // Request $CLIENTE environment variable
 var cliente = process.env['CLIENTE'];
 if (!cliente) {
-  throw new Error('The $CLIENTE environment variable was not found!');
+    throw new Error('The $CLIENTE environment variable was not found!');
 }
 cliente = JSON.parse(cliente);
 
@@ -95,21 +95,21 @@ router.get("/getMulta", multasController.getMultaById);
 router.post("/actualizarEstado", multasController.actualizarEstado);
 
 //MULTAS
-    //POST
+//POST
 router.post('/multa', (req, res) => {
     console.log(req.body);
-//    const newMulta = {
-//        Domicilio: req.body.domicilio,
-//        FechaEmision: req.body.fechaEmision,
-//        Hora: req.body.hora,
-//        Nacimiento: req.body.nacimiento,
-//        NroDoc: req.body.nroDoc,
-//        Sexo: req.body.sexo,
-//        TipoDoc: req.body.tipoDoc,
-//        ApellidoInfractor: req.body.apellidoInfractor,
-//        NombresInfractor: req.body.nombresInfractor
-//        // Tal vez estaría bueno guardar un identificador del inspector que manda la multa
-//    };
+    //    const newMulta = {
+    //        Domicilio: req.body.domicilio,
+    //        FechaEmision: req.body.fechaEmision,
+    //        Hora: req.body.hora,
+    //        Nacimiento: req.body.nacimiento,
+    //        NroDoc: req.body.nroDoc,
+    //        Sexo: req.body.sexo,
+    //        TipoDoc: req.body.tipoDoc,
+    //        ApellidoInfractor: req.body.apellidoInfractor,
+    //        NombresInfractor: req.body.nombresInfractor
+    //        // Tal vez estaría bueno guardar un identificador del inspector que manda la multa
+    //    };
     db.collection('multas').add(req.body);
     res.send('Multa guardada');
 });
