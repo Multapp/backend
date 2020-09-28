@@ -5,6 +5,19 @@ module.exports = (db, auth, imageService) => {
             .then(userRecord => {
                 db.collection("usuarios").doc(userRecord.uid).get()
                     .then(snapshot => {
+                        let direccion = snapshot.data().calle; // arma el string de la direccion
+                        if (snapshot.data().numero === "") {
+                            direccion = direccion.concat(" S/N");
+                        }
+                        else {
+                            direccion = direccion.concat(" ", snapshot.data().numero);
+                        }
+                        if (snapshot.data().piso !== "") {
+                            direccion = direccion.concat(", Piso ", snapshot.data().piso);
+                        }
+                        if (snapshot.data().departamento !== "") {
+                            direccion = direccion.concat(", Departamento ", snapshot.data().departamento);
+                        }
                         const datos = {
                             id: userRecord.uid,
                             foto: userRecord.photoURL,
@@ -17,7 +30,7 @@ module.exports = (db, auth, imageService) => {
                             fechaNacimiento: snapshot.data().fechaNacimiento,
                             sexo: snapshot.data().sexo,
                             telefono: userRecord.phoneNumber,
-                            direccion: snapshot.data().calle + " " + snapshot.data().numero,
+                            direccion: direccion,
                             calle: snapshot.data().calle,
                             numero: snapshot.data().numero,
                             piso: snapshot.data().piso,
