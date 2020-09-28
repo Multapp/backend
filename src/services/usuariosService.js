@@ -1,4 +1,4 @@
-module.exports = (db, auth, imageService) => {
+module.exports = (db, auth, imageService, firebase) => {
     return {
         getUsuarioById: (req, res, next) => {
             auth.getUser(req.query.id)
@@ -60,7 +60,7 @@ module.exports = (db, auth, imageService) => {
                             email: userRecord.email,
                             foto: userRecord.photoURL,
                         });
-                    });     
+                    });
                     res.status(200).send(usuarios);
                 }).catch(error => {
                     console.log(error);
@@ -70,56 +70,61 @@ module.exports = (db, auth, imageService) => {
         addUsuario: (req, res, storage) => {
             // aca tambien habria que:
             // mandarle correo al tipo con su contraseña
-            let password = (Math.floor(Math.random() * (1000000 - 100000) ) + 100000).toString();
+            let password = (Math.floor(Math.random() * (1000000 - 100000)) + 100000).toString();
             console.log(password);
             auth.createUser({ // crea el usuario
-                email: req.body.email,
-                password: password,
-                displayName: req.body.nombre + " " + req.body.apellido,
-                phoneNumber: req.body.telefono,
-            })
+                    email: req.body.email,
+                    password: password,
+                    displayName: req.body.nombre + " " + req.body.apellido,
+                    phoneNumber: req.body.telefono,
+                })
                 .then(userRecord => {
                     let uid = userRecord.uid;
-                    auth.setCustomUserClaims(uid, {rol: req.body.rol}) // setea el rol del usuario
+                    auth.setCustomUserClaims(uid, { rol: req.body.rol }) // setea el rol del usuario
                         .then(() => { // guarda los datos personales en la base de datos
                             db.collection("usuarios").doc(uid).set({
-                                dni: req.body.dni,
-                                apellido: req.body.apellido,
-                                nombre: req.body.nombre,
-                                fechaNacimiento: req.body.fechaNacimiento,
-                                sexo: req.body.sexo,
-                                calle: req.body.calle,
-                                numero: req.body.numero,
-                                piso: req.body.piso,
-                                departamento: req.body.departamento,
-                                localidad: req.body.localidad,
-                                provincia: req.body.provincia,
-                            })
+                                    dni: req.body.dni,
+                                    apellido: req.body.apellido,
+                                    nombre: req.body.nombre,
+                                    fechaNacimiento: req.body.fechaNacimiento,
+                                    sexo: req.body.sexo,
+                                    calle: req.body.calle,
+                                    numero: req.body.numero,
+                                    piso: req.body.piso,
+                                    departamento: req.body.departamento,
+                                    localidad: req.body.localidad,
+                                    provincia: req.body.provincia,
+                                })
                                 .then(() => {
                                     if (req.file) {
                                         imageService.uploader("avatar", uid, req, res, null) // sube su avatar a storage
-                                        .then(publicURL => {
-                                            auth.updateUser(uid, { // asigna la url del avatar al usuario
-                                                photoURL: publicURL,
-                                            })
-                                                .then(() => {
-                                                    res.status(201).send("Usuario " + uid + " creado correctamente");
-                                                }).catch(error => {
-                                                    console.log(error);
-                                                    res.status(500).send({
-                                                        message: error.code,
+                                            .then(publicURL => {
+                                                auth.updateUser(uid, { // asigna la url del avatar al usuario
+                                                        photoURL: publicURL,
+                                                    })
+                                                    .then(() => {
+                                                        console.log("Usuario " + uid + " creado correctamente");
+                                                    }).catch(error => {
+                                                        console.log(error);
+                                                        res.status(500).send({
+                                                            message: error.code,
+                                                        });
                                                     });
+                                            }).catch(error => {
+                                                console.log(error);
+                                                res.status(500).send({
+                                                    message: "aca hubo un error",
                                                 });
-                                        }).catch(error => {
-                                            console.log(error);
-                                            res.status(500).send({
-                                                message: "aca hubo un error",
                                             });
-                                        });
                                     }
-                                    else {
+                                    const actionCodeSettings = {
+                                        url: 'https://multapp-front.herokuapp.com/'
+                                    };
+                                    firebase.auth().sendPasswordResetEmail(req.body.email, actionCodeSettings).then(() => {
                                         res.status(201).send("Usuario " + uid + " creado correctamente");
-                                    }
+                                    }).catch(function(error) {
+                                        res.json(error);
+                                    });
                                 }).catch(error => {
                                     console.log(error);
                                     res.status(500).send({
@@ -143,47 +148,46 @@ module.exports = (db, auth, imageService) => {
             // aca tambien habria que:
             // mandarle correo al tipo con el cambio de correo
             auth.updateUser(req.body.id, { // actualiza los datos en authentication
-                email: req.body.email,
-                phoneNumber: req.body.telefono,
-                displayName: req.body.nombre + " " + req.body.apellido,
-            })
+                    email: req.body.email,
+                    phoneNumber: req.body.telefono,
+                    displayName: req.body.nombre + " " + req.body.apellido,
+                })
                 .then(() => {
                     db.collection("usuarios").doc(req.body.id).update({ // actualiza los datos en firestore
-                        dni: req.body.dni,
-                        apellido: req.body.apellido,
-                        nombre: req.body.nombre,
-                        fechaNacimiento: req.body.fechaNacimiento,
-                        sexo: req.body.sexo,
-                        calle: req.body.calle,
-                        numero: req.body.numero,
-                        piso: req.body.piso,
-                        departamento: req.body.departamento,
-                        localidad: req.body.localidad,
-                        provincia: req.body.provincia,
-                    })
+                            dni: req.body.dni,
+                            apellido: req.body.apellido,
+                            nombre: req.body.nombre,
+                            fechaNacimiento: req.body.fechaNacimiento,
+                            sexo: req.body.sexo,
+                            calle: req.body.calle,
+                            numero: req.body.numero,
+                            piso: req.body.piso,
+                            departamento: req.body.departamento,
+                            localidad: req.body.localidad,
+                            provincia: req.body.provincia,
+                        })
                         .then(() => {
                             if (req.file) { // si se carga foto se actualiza, sino no
                                 imageService.uploader("avatar", req.body.id, req, res, null) // sube su avatar a storage
-                                        .then(publicURL => {
-                                            auth.updateUser(req.body.id, { // asigna la url del avatar al usuario
+                                    .then(publicURL => {
+                                        auth.updateUser(req.body.id, { // asigna la url del avatar al usuario
                                                 photoURL: publicURL,
                                             })
-                                                .then(() => {
-                                                    res.status(201).send("Usuario " + req.body.id + " actualizado correctamente");
-                                                }).catch(error => {
-                                                    console.log(error);
-                                                    res.status(500).send({
-                                                        message: error.code,
-                                                    });
+                                            .then(() => {
+                                                res.status(201).send("Usuario " + req.body.id + " actualizado correctamente");
+                                            }).catch(error => {
+                                                console.log(error);
+                                                res.status(500).send({
+                                                    message: error.code,
                                                 });
-                                        }).catch(error => {
-                                            console.log(error);
-                                            res.status(500).send({
-                                                message: "aca hubo un error",
                                             });
+                                    }).catch(error => {
+                                        console.log(error);
+                                        res.status(500).send({
+                                            message: "aca hubo un error",
                                         });
-                            }
-                            else { // si no se cargo foto, se manda la response asi nomas
+                                    });
+                            } else { // si no se cargo foto, se manda la response asi nomas
                                 res.status(201).send("Usuario " + req.body.id + " actualizado correctamente");
                             }
                         }).catch(error => {
