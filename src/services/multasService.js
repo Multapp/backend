@@ -90,7 +90,7 @@ module.exports = function (db, auth, storage) {
                     return respuesta;
                 });
                 const authUser = await auth.getUser(user.id);
-                const plantilla = templateTicket(user.data.nombre, user.data.apellido);
+                const plantilla = templateTicket(user.data.nombre, user.data.apellido, user.data.sexo);
                 sendEmail(authUser.email, "Multas con Actualizaciones Recientes", plantilla);
                 res.send("Estado de multa " + req.body.id + " actualizado con éxito");
             }).catch(error => {
