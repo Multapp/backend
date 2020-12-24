@@ -94,26 +94,6 @@ router.get("/getMulta", multasController.getMultaById);
 // cambiar de estado una multa
 router.post("/actualizarEstado", multasController.actualizarEstado);
 
-//MULTAS
-//POST
-router.post('/multa', (req, res) => {
-    console.log(req.body);
-    //    const newMulta = {
-    //        Domicilio: req.body.domicilio,
-    //        FechaEmision: req.body.fechaEmision,
-    //        Hora: req.body.hora,
-    //        Nacimiento: req.body.nacimiento,
-    //        NroDoc: req.body.nroDoc,
-    //        Sexo: req.body.sexo,
-    //        TipoDoc: req.body.tipoDoc,
-    //        ApellidoInfractor: req.body.apellidoInfractor,
-    //        NombresInfractor: req.body.nombresInfractor
-    //        // Tal vez estaría bueno guardar un identificador del inspector que manda la multa
-    //    };
-    db.collection('multas').add(req.body);
-    res.send('Multa guardada');
-});
-
 /*** Endpoints de usuarios ***/
 
 // obtener usuarios resumidos
