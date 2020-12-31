@@ -32,7 +32,13 @@ module.exports = (db, auth) => {
             
         },
         deleteMarca: function(req, res, next) {
-            
+            db.collection("vehiculos").doc(req.query.id).delete()
+            .then(() => {
+                res.status(200).send("Marca " + req.query.id + " eliminada correctamente");
+            }).catch(error => {
+                console.log(error);
+                res.status(500).send(error);
+            });
         },
         deleteModelo: function(req, res, next) {
             
