@@ -52,6 +52,9 @@ const multasController = require('./controllers/multasController.js')(multasServ
 const usuariosService = require('./services/usuariosService.js')(db, auth, imageService, firebase)
 const usuariosController = require('./controllers/usuariosController.js')(usuariosService)
 
+const vehiculosService = require('./services/vehiculosService.js')(db, auth)
+const vehiculosController = require('./controllers/vehiculosController.js')(vehiculosService)
+
 const perfilService = require('./services/perfilService.js')(db, auth)
 const perfilController = require('./controllers/perfilController.js')(perfilService)
 
@@ -111,6 +114,23 @@ router.post("/editUsuario", imageMiddleware.single('file'), usuariosController.e
 
 // eliminar un usuario
 router.delete("/deleteUsuario", usuariosController.deleteUsuario);
+
+/*** Endpoints de vehiculos ***/
+
+// obtener vehiculos
+router.get("/getVehiculos", vehiculosController.getVehiculos);
+
+// crear marca
+router.post("/addMarca", vehiculosController.addMarca);
+
+// crear modelo
+router.post("/addModelo", vehiculosController.addModelo);
+
+// eliminar marca
+router.delete("/deleteMarca", vehiculosController.deleteMarca);
+
+// eliminar modelo
+router.delete("/deleteModelo", vehiculosController.deleteModelo);
 
 /*** Endpoints de perfil ***/
 
