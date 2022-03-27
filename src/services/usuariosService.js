@@ -50,7 +50,7 @@ module.exports = (db, auth, imageService, clientAuth) => {
                 const listUsersResult = await auth.listUsers();
                 const usuarios = listUsersResult.users.map(userRecord => ({
                     id: userRecord.uid,
-                    rol: userRecord.customClaims.rol,
+                    rol: userRecord.customClaims ? userRecord.customClaims.rol : null,
                     nombre: userRecord.displayName,
                     email: userRecord.email,
                     foto: userRecord.photoURL,
