@@ -1,54 +1,28 @@
-module.exports = (db, auth, firebase) => {
+const { signInWithEmailAndPassword, signOut } = require("firebase/auth");
+
+module.exports = (auth, clientAuth) => {
     // Creating session cookie
-    function iniciarSesion(email, password, res) {
-        if (firebase.auth().currentUser) {
-            firebase.auth().signOut();
+    async function iniciarSesion(email, password, res) {
+        try {
+            if (clientAuth.currentUser) {
+                signOut(clientAuth);
+            }
+            const { user } = await signInWithEmailAndPassword(clientAuth, email, password);
+            const idToken = await user.getIdToken();
+            const userRecord = await auth.getUserByEmail(email);
+            const data = {
+                idToken: idToken,
+                uid: userRecord.uid,
+                email: userRecord.email,
+                rol: userRecord.customClaims ? userRecord.customClaims.rol : null,
+                displayName: userRecord.displayName,
+                photoURL: userRecord.photoURL,
+            };
+            res.status(200).send(data);
+        } catch (err) {
+            console.log(err);
+            res.status(401).send(err);
         }
-        firebase.auth().signInWithEmailAndPassword(email, password)
-            .then(({ user }) => {
-                return user.getIdToken().then(idToken => {
-                    //const expiresIn = 60 * 60 * 8 * 1000;
-                    auth.getUserByEmail(email)
-                        .then(userRecord => {
-                            res.send({
-                                idToken: idToken,
-                                uid: userRecord.uid,
-                                email: userRecord.email,
-                                rol: userRecord.customClaims.rol,
-                                displayName: userRecord.displayName,
-                                photoURL: userRecord.photoURL,
-                            });
-                        }).catch(error => {
-                            console.log(error);
-                            res.send(error);
-                        });
-                    return;
-                });
-            })
-            .catch(error => {
-                console.log(error);
-                res.status(401).json({
-                    message: error.code,
-                });
-            })
-            .then(() => {
-                return firebase.auth().signOut();
-            }).catch(error => {
-                var errorCode = error.code;
-                var errorMessage = error.message;
-                if (errorCode === 'auth/wrong-password') {
-                    res.jsonp({
-                        fail: true,
-                        mensaje: "CONTRASEÑA INCORRECTA"
-                    });
-                } else {
-                    console.log(error);
-                    res.jsonp({
-                        fail: true,
-                        mensaje: errorMessage
-                    });
-                }
-            });
     }
 
     return {
@@ -80,7 +54,7 @@ module.exports = (db, auth, firebase) => {
         cambiarContrasena: (req, res, next) => {
             auth.getUser(req.body.uid) // obtener el email del usuario
                 .then(userRecord => {
-                    firebase.auth().signInWithEmailAndPassword(userRecord.email, req.body.contrasenaActual) // iniciar sesion para ver si la contraseña actual es correcta
+                    signInWithEmailAndPassword(clientAuth, userRecord.email, req.body.contrasenaActual) // iniciar sesion para ver si la contraseña actual es correcta
                         .then(() => {
                             auth.updateUser(req.body.uid, { // actualizar la contraseña
                                     password: req.body.contrasenaNueva,
@@ -106,18 +80,18 @@ module.exports = (db, auth, firebase) => {
                     });
                 });
         },
-        recuperarContrasena: (req, res, next) => {
-            const actionCodeSettings = {
-                url: 'https://multapp-front.herokuapp.com/'
-            };
-            firebase.auth().sendPasswordResetEmail(req.body.email, actionCodeSettings)
-                .then(() => {
-                    console.log('E-mail enviado');
-                    res.send('E-mail enviado');
-                }).catch(error => {
-                    console.log(error);
-                    res.json(error);
-                });
-        }
+        // recuperarContrasena: (req, res, next) => {
+        //     const actionCodeSettings = {
+        //         url: 'https://multapp-front.herokuapp.com/'
+        //     };
+        //     firebase.auth().sendPasswordResetEmail(req.body.email, actionCodeSettings)
+        //         .then(() => {
+        //             console.log('E-mail enviado');
+        //             res.send('E-mail enviado');
+        //         }).catch(error => {
+        //             console.log(error);
+        //             res.json(error);
+        //         });
+        // }
     }
 }
