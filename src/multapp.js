@@ -17,7 +17,7 @@ if (!creds) {
 }
 const adminApp = initializeApp({
     credential: cert(JSON.parse(creds)),
-    storageBucket: "node-firebase-example-ffff0.appspot.com"
+    storageBucket: "multas-36b0c.appspot.com"
 });
 const bucket = getStorage(adminApp).bucket();
 const auth = getAuth(adminApp);
