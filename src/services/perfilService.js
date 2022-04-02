@@ -4,7 +4,7 @@ module.exports = (db, auth) => {
             try {
                 const [userRecord, snapshot] = await Promise.all([
                     auth.getUser(req.query.uid),
-                    db.collection("usuarios").doc(userRecord.uid).get()
+                    db.collection("usuarios").doc(req.query.uid).get()
                 ]);
                 const response = {
                     id: userRecord.uid,
