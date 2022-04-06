@@ -3,17 +3,14 @@ module.exports = function(vehiculosService) {
         getVehiculos: function(req, res, next) {
             vehiculosService.getVehiculos(req, res, next)
         },
-        addMarca: function(req, res, next) {
-            vehiculosService.addMarca(req, res, next)
+        addVehiculo: function(req, res, next) {
+            vehiculosService.addVehiculo(req, res, next)
         },
-        addModelo: function(req, res, next) {
-            vehiculosService.addModelo(req, res, next)
+        editVehiculo: function(req, res, next) {
+            vehiculosService.editVehiculo(req, res, next)
         },
-        deleteMarca: function(req, res, next) {
-            vehiculosService.deleteMarca(req, res, next)
-        },
-        deleteModelo: function(req, res, next) {
-            vehiculosService.deleteModelo(req, res, next)
+        deleteVehiculo: function(req, res, next) {
+            vehiculosService.deleteVehiculo(req, res, next)
         },
     }
 }

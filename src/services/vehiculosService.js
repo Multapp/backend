@@ -1,6 +1,8 @@
+const { doc, setDoc } = require('firebase/firestore');
+
 module.exports = (db, auth) => {
     return {
-        getVehiculos: function(req, res, next) {
+        getVehiculos: function(_req, res) {
             db.collection("vehiculos").get()
                 .then(snapshot => {
                     let data = [];
@@ -16,11 +18,10 @@ module.exports = (db, auth) => {
                     res.status(500).send("Error al obtener datos de vehículos");
                 });
         },
-        addMarca: function(req, res, next) {
+        addVehiculo: function(req, res) {
             db.collection("vehiculos").add({
-                logo: "",
                 marca: req.body.marca,
-                modelos: req.body.modelos,
+                modelos: req.body.modelos || []
             }).then(() => {
                 res.status(201).send("Marca " + req.body.marca + " creada correctamente");
             }).catch(error => {
@@ -28,20 +29,23 @@ module.exports = (db, auth) => {
                 res.status(500).send(error);
             });
         },
-        addModelo: function(req, res, next) {
-            
+        editVehiculo: async function(req, res) {
+            try {
+                await db.collection('vehiculos').doc(req.body.id).update(req.body.data);
+                res.status(201).send("Vehículo " + req.body.marca + " actualizado correctamente");
+            } catch (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
         },
-        deleteMarca: function(req, res, next) {
+        deleteVehiculo: function(req, res) {
             db.collection("vehiculos").doc(req.query.id).delete()
             .then(() => {
-                res.status(200).send("Marca " + req.query.id + " eliminada correctamente");
+                res.status(200).send("Vehículo " + req.query.id + " eliminado correctamente");
             }).catch(error => {
                 console.log(error);
                 res.status(500).send(error);
             });
-        },
-        deleteModelo: function(req, res, next) {
-            
-        },
+        }
     }
 }

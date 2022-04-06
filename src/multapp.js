@@ -80,10 +80,9 @@ router.delete("/deleteUsuario", usuariosController.deleteUsuario);
 
 /*** Endpoints de vehiculos ***/
 router.get("/getVehiculos", vehiculosController.getVehiculos);
-router.post("/addMarca", vehiculosController.addMarca);
-router.post("/addModelo", vehiculosController.addModelo);
-router.delete("/deleteMarca", vehiculosController.deleteMarca);
-router.delete("/deleteModelo", vehiculosController.deleteModelo);
+router.post("/addVehiculo", vehiculosController.addVehiculo);
+router.post("/editVehiculo", vehiculosController.editVehiculo);
+router.delete("/deleteVehiculo", vehiculosController.deleteVehiculo);
 
 /*** Endpoints de perfil ***/
 router.get("/getPerfil", perfilController.getPerfil);
