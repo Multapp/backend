@@ -47,38 +47,24 @@ module.exports = (auth, clientAuth) => {
             let password = req.body.password.toString();
             iniciarSesion(email, password, res);
         },
-        sessionLogout: (req, res, next) => {
+        sessionLogout: (_req, res) => {
             res.clearCookie("session");
             //res.redirect("/");
         },
-        cambiarContrasena: (req, res, next) => {
-            auth.getUser(req.body.uid) // obtener el email del usuario
-                .then(userRecord => {
-                    signInWithEmailAndPassword(clientAuth, userRecord.email, req.body.contrasenaActual) // iniciar sesion para ver si la contraseña actual es correcta
-                        .then(() => {
-                            auth.updateUser(req.body.uid, { // actualizar la contraseña
-                                    password: req.body.contrasenaNueva,
-                                })
-                                .then(() => {
-                                    res.status(200).send("Contraseña actualizada exitosamente");
-                                }).catch(error => {
-                                    console.log(error);
-                                    res.status(401).send({
-                                        message: error.code,
-                                    });
-                                });
-                        }).catch(error => {
-                            console.log(error);
-                            res.status(401).send({
-                                message: error.code,
-                            });
-                        });
-                }).catch(error => {
-                    console.log(error);
-                    res.status(401).send({
-                        message: error.code,
-                    });
+        cambiarContrasena: async (req, res) => {
+            try {
+                const userRecord = await auth.getUser(req.body.uid); // obtener el email del usuario
+                await signInWithEmailAndPassword(clientAuth, userRecord.email, req.body.contrasenaActual); // iniciar sesion para ver si la contraseña actual es correcta
+                await auth.updateUser(req.body.uid, { // actualizar la contraseña
+                    password: req.body.contrasenaNueva,
                 });
+                res.status(200).send("Contraseña actualizada exitosamente");
+            } catch (err) {
+                console.log(err);
+                res.status(401).send({
+                    message: err.code,
+                });
+            }
         },
         // recuperarContrasena: (req, res, next) => {
         //     const actionCodeSettings = {
