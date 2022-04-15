@@ -69,6 +69,8 @@ router.post("/recuperarContrasena", autenticacionController.recuperarContrasena)
 router.get("/getMultas", multasController.getAllMultas);
 router.get("/getMulta", multasController.getMultaById);
 router.post("/actualizarEstado", multasController.actualizarEstado);
+// obtener multas por usuario
+router.get("/multas-by-user", multasController.getMultaByUser);
 
 /*** Endpoints de usuarios ***/
 router.get("/getUsuarios", usuariosController.getUsuarios);
