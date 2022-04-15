@@ -94,9 +94,12 @@ module.exports = (db, auth, imageService, clientAuth) => {
                         photoURL: publicURL,
                     })
                 }
-                const actionCodeSettings = {
-                    url: 'https://multa-app-front.herokuapp.com/'
-                };
+                var actionCodeSettings = {};
+                if (req.body.rol == "Ciudadano"){
+                    actionCodeSettings.url = 'https://multapp-citizen.herokuapp.com/';
+                } else {
+                    actionCodeSettings.url = 'https://multa-app-front.herokuapp.com/';
+                }
                 await sendPasswordResetEmail(clientAuth, req.body.email, actionCodeSettings);
                 const link = await auth.generateEmailVerificationLink(req.body.email);
                 res.status(201).send("Usuario " + uid + " creado correctamente");
