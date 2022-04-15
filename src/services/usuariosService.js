@@ -87,6 +87,7 @@ module.exports = (db, auth, imageService, clientAuth) => {
                     departamento: req.body.departamento,
                     localidad: req.body.localidad,
                     provincia: req.body.provincia,
+                    ...(req.body.patentes && {patentes: req.body.patentes})
                 });
                 if (req.file) {
                     const publicURL = await imageService.uploader("avatar", uid, req, res, null); // sube su avatar a storage
