@@ -38,6 +38,7 @@ module.exports = (db, auth, imageService, clientAuth) => {
                     departamento: snapshot.data().departamento,
                     localidad: snapshot.data().localidad,
                     provincia: snapshot.data().provincia,
+                    ...(snapshot.data().patentes && {patentes: snapshot.data().patentes})
                 }
                 res.send(datos);
             } catch (err) {
