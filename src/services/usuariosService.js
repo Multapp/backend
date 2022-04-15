@@ -95,10 +95,10 @@ module.exports = (db, auth, imageService, clientAuth) => {
                     })
                 }
                 const actionCodeSettings = {
-                    url: 'http://localhost:3000/'
+                    url: 'https://multa-app-front.herokuapp.com/'
                 };
-                // await sendPasswordResetEmail(clientAuth, req.body.email, actionCodeSettings);
-                // const link = await auth.generateEmailVerificationLink(req.body.email);
+                await sendPasswordResetEmail(clientAuth, req.body.email, actionCodeSettings);
+                const link = await auth.generateEmailVerificationLink(req.body.email);
                 res.status(201).send("Usuario " + uid + " creado correctamente");
             } catch (err) {
                 console.log(err);
