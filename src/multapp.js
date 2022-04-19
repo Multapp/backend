@@ -53,6 +53,9 @@ const usuariosController = require('./controllers/usuariosController.js')(usuari
 const vehiculosService = require('./services/vehiculosService.js')(db, auth)
 const vehiculosController = require('./controllers/vehiculosController.js')(vehiculosService)
 
+const infraccionesService = require('./services/infraccionesService.js')(db, auth)
+const infraccionesController = require('./controllers/infraccionesController.js')(infraccionesService)
+
 const perfilService = require('./services/perfilService.js')(db, auth)
 const perfilController = require('./controllers/perfilController.js')(perfilService)
 
@@ -85,6 +88,12 @@ router.get("/getVehiculos", vehiculosController.getVehiculos);
 router.post("/addVehiculo", vehiculosController.addVehiculo);
 router.post("/editVehiculo", vehiculosController.editVehiculo);
 router.delete("/deleteVehiculo", vehiculosController.deleteVehiculo);
+
+/*** Endpoints de Infracciones ***/
+router.get("/getInfracciones", infraccionesController.getInfracciones);
+router.post("/addVInfracciones", infraccionesController.addInfraccion);
+router.post("/editInfracciones", infraccionesController.editInfraccion);
+router.delete("/deleteInfracciones", infraccionesController.deleteInfraccion);
 
 /*** Endpoints de perfil ***/
 router.get("/getPerfil", perfilController.getPerfil);
