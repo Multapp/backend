@@ -91,7 +91,7 @@ router.delete("/deleteVehiculo", vehiculosController.deleteVehiculo);
 
 /*** Endpoints de Infracciones ***/
 router.get("/getInfracciones", infraccionesController.getInfracciones);
-router.post("/addVInfracciones", infraccionesController.addInfraccion);
+router.post("/addInfracciones", infraccionesController.addInfraccion);
 router.post("/editInfracciones", infraccionesController.editInfraccion);
 router.delete("/deleteInfracciones", infraccionesController.deleteInfraccion);
 
