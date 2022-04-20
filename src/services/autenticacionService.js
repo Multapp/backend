@@ -20,8 +20,10 @@ module.exports = (auth, clientAuth) => {
             };
             res.status(200).send(data);
         } catch (err) {
-            console.log(err);
-            res.status(401).send(err);
+            console.log(err);               
+            res.status(401).json({
+                message: err.code,
+            });
         }
     }
 

@@ -30,7 +30,7 @@ module.exports = (db, auth) => {
                 unidadesFijasMax: req.body.unidadesFijasMax,
                 extracto: req.body.extracto || []
             }).then(() => {
-                res.status(201).send("Infracción Ley: " + req.body.ley + "Art. " + req.body.articulo + "Inciso " + req.body.inciso  + "Extracto: " + req.body.extracto + " creada correctamente");
+                res.status(201).send("Infracción Ley: " + req.body.ley + " - Art. " + req.body.articulo + " - Inciso " + req.body.inciso  + "Extracto: " + req.body.extracto + " creada correctamente");
             }).catch(error => {
                 console.log(error);
                 res.status(500).send(error);
