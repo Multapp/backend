@@ -21,8 +21,13 @@ module.exports = (db, auth) => {
         addInfraccion: function(req, res) {
             db.collection("infracciones").add({
                 ley: req.body.ley,
+                codigo: req.body.codigo,
                 articulo: req.body.articulo,
                 inciso: req.body.inciso,
+                vigencianIcio: req.body.vigenciaInicio,
+                vigenciaFin: req.body.vigenciaFin,
+                unidadesFijasMin: req.body.unidadesFijasMin,
+                unidadesFijasMax: req.body.unidadesFijasMax,
                 extracto: req.body.extracto || []
             }).then(() => {
                 res.status(201).send("Infracción Ley: " + req.body.ley + "Art. " + req.body.articulo + "Inciso " + req.body.inciso  + "Extracto: " + req.body.extracto + " creada correctamente");
