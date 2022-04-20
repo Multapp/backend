@@ -18,7 +18,7 @@ module.exports = (db, auth) => {
                     res.status(500).send("Error al obtener datos de infracciones");
                 });
         },
-        addInfracciones: function(req, res) {
+        addInfraccion: function(req, res) {
             db.collection("infracciones").add({
                 ley: req.body.ley,
                 articulo: req.body.articulo,
@@ -31,7 +31,7 @@ module.exports = (db, auth) => {
                 res.status(500).send(error);
             });
         },
-        editInfracciones: async function(req, res) {
+        editInfraccion: async function(req, res) {
             try {
                 await db.collection('infracciones').doc(req.body.id).update(req.body.data);
                 res.status(201).send("Infracción " + req.body.marca + " actualizado correctamente");
@@ -40,7 +40,7 @@ module.exports = (db, auth) => {
                 res.status(500).send(err);
             }
         },
-        deleteInfracciones: function(req, res) {
+        deleteInfraccion: function(req, res) {
             db.collection("infracciones").doc(req.query.id).delete()
             .then(() => {
                 res.status(200).send("Infracción " + req.query.id + " eliminado correctamente");
