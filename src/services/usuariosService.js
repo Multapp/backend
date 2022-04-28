@@ -38,6 +38,7 @@ module.exports = (db, auth, imageService, clientAuth) => {
                     departamento: snapshot.data().departamento,
                     localidad: snapshot.data().localidad,
                     provincia: snapshot.data().provincia,
+                    desactivado: userRecord.disabled,
                     ...(snapshot.data().patentes && {patentes: snapshot.data().patentes})
                 }
                 res.send(datos);
@@ -55,6 +56,7 @@ module.exports = (db, auth, imageService, clientAuth) => {
                     nombre: userRecord.displayName,
                     email: userRecord.email,
                     foto: userRecord.photoURL,
+                    desactivado: userRecord.disabled
                 }));
                 res.status(200).send(usuarios);
             } catch (err) {
@@ -152,9 +154,30 @@ module.exports = (db, auth, imageService, clientAuth) => {
             try {
                 // FALTA
                 // eliminar la foto de perfil del usuario (cuando sepa como cargar una)
-                await auth.deleteUser(req.query.id) // elimina la cuenta de authentication
-                await db.collection("usuarios").doc(req.query.id).delete() // elimina los datos del usuario en firestore
+                await auth.updateUser(req.query.id, {
+                    disabled: true
+                }) // desactiva la cuenta de authentication
+                await db.collection("usuarios").doc(req.query.id).update({
+                    desactivado: true
+                }) // elimina los datos del usuario en firestore
                 res.status(200).send("Usuario " + req.query.id + " eliminado correctamente");
+            } catch (err) {
+                console.log(err);
+                res.status(500).send(err);
+            }
+        },
+        reactivarUsuario: async (req, res) => {
+            try {
+                // FALTA
+                // eliminar la foto de perfil del usuario (cuando sepa como cargar una)
+                console.log("Cuenta a reactivar: ", req.query.id)
+                await auth.updateUser(req.query.id, {
+                    disabled: false
+                }) // desactiva la cuenta de authentication
+                await db.collection("usuarios").doc(req.query.id).update({
+                    desactivado: false
+                }) // elimina los datos del usuario en firestore
+                res.status(200).send("Usuario " + req.query.id + " reactivado correctamente");
             } catch (err) {
                 console.log(err);
                 res.status(500).send(err);

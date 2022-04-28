@@ -14,6 +14,9 @@ module.exports = function(usuariosService) {
         },
         deleteUsuario: function (req, res, next) {
             usuariosService.deleteUsuario(req, res, next)
+        },
+        reactivarUsuario: function (req, res, next) {
+            usuariosService.reactivarUsuario(req, res, next)
         }
     }
 }

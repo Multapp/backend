@@ -82,6 +82,7 @@ router.get("/getUsuario", usuariosController.getUsuarioById);
 router.post("/addUsuario", imageMiddleware.single('file'), usuariosController.addUsuario);
 router.post("/editUsuario", imageMiddleware.single('file'), usuariosController.editUsuario);
 router.delete("/deleteUsuario", usuariosController.deleteUsuario);
+router.get("/reactivarUsuario", usuariosController.reactivarUsuario);
 
 /*** Endpoints de vehiculos ***/
 router.get("/getVehiculos", vehiculosController.getVehiculos);
