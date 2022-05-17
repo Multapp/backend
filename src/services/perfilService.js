@@ -20,7 +20,8 @@ module.exports = (db, auth) => {
                         telefono: userRecord.phoneNumber,
                         direccion: snapshot.data().calle + " " + snapshot.data().numero,
                         localidad: snapshot.data().localidad,
-                        provincia: snapshot.data().provincia
+                        provincia: snapshot.data().provincia,
+                        ...(snapshot.data().patentes && {patentes: snapshot.data().patentes})
                     }
                 };
                 res.send(response);
