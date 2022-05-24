@@ -10,7 +10,7 @@ const { getStorage } = require('firebase-admin/storage');
 const { initializeApp: initializeClientApp } = require('firebase/app');
 const { getAuth: getClientAuth } = require('firebase/auth');
 
-// Request $CREDS environment variable
+// Request $CREDS environment variable //
 const creds = process.env['CREDS'];
 if (!creds) {
     throw new Error('The $CREDS environment variable was not found!');
