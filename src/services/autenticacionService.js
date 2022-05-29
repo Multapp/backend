@@ -68,18 +68,18 @@ module.exports = (auth, clientAuth) => {
                 });
             }
         },
-        // recuperarContrasena: (req, res, next) => {
-        //     const actionCodeSettings = {
-        //         url: 'https://multapp-front.herokuapp.com/'
-        //     };
-        //     firebase.auth().sendPasswordResetEmail(req.body.email, actionCodeSettings)
-        //         .then(() => {
-        //             console.log('E-mail enviado');
-        //             res.send('E-mail enviado');
-        //         }).catch(error => {
-        //             console.log(error);
-        //             res.json(error);
-        //         });
-        // }
+        recuperarContrasena: (req, res, next) => {
+            const actionCodeSettings = {
+                url: 'https://multa-app-front.herokuapp.com/'
+            };
+            firebase.auth().sendPasswordResetEmail(req.body.email, actionCodeSettings)
+                .then(() => {
+                    console.log('E-mail enviado');
+                    res.send('E-mail enviado');
+                }).catch(error => {
+                    console.log(error);
+                    res.json(error);
+                });
+        }
     }
 }
