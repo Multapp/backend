@@ -27,11 +27,15 @@ module.exports = (auth, clientAuth) => {
         }
     }
 
-    async function recuperarContrasena(email, res) {
+    async function recuperarContrasena(email, rol, res) {
         try {
-            const actionCodeSettings = {
-                url: 'https://multa-app-front.herokuapp.com/'
-            };
+            var actionCodeSettings = {};
+            if (rol == "Ciudadano"){
+                actionCodeSettings.url = 'https://multapp-citizen.herokuapp.com/';
+            } else {
+                actionCodeSettings.url = 'https://multa-app-front.herokuapp.com/';
+            }
+
             sendPasswordResetEmail(clientAuth, email, actionCodeSettings)
                 .then(() => {
                     console.log('E-mail enviado');
@@ -94,7 +98,8 @@ module.exports = (auth, clientAuth) => {
         recuperarContrasena: (req, res, next) => {
             console.log("Recuperando la psw")
             let email = req.body.email.toString();
-            recuperarContrasena(email, res)
+            let rol = req.body.rol.toString();
+            recuperarContrasena(email, rol, res)
 
         }
     }
