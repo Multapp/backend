@@ -1,4 +1,4 @@
-const { signInWithEmailAndPassword, signOut } = require("firebase/auth");
+const { getAuth, signInWithEmailAndPassword, signOut, sendPasswordResetEmail } = require("firebase/auth");
 
 module.exports = (auth, clientAuth) => {
     // Creating session cookie
@@ -27,8 +27,31 @@ module.exports = (auth, clientAuth) => {
         }
     }
 
+    async function recuperarContrasena(email, res) {
+        try {
+            const actionCodeSettings = {
+                url: 'https://multa-app-front.herokuapp.com/'
+            };
+            sendPasswordResetEmail(clientAuth, email, actionCodeSettings)
+                .then(() => {
+                    console.log('E-mail enviado');
+                    res.send('E-mail enviado');
+                }).catch(error => {
+                    console.log(error);
+                    res.json(error);
+                });
+
+        } catch (err) {
+            console.log(err);               
+            res.status(500).json({
+                message: err.code,
+            });
+        }
+    }
+
     return {
         sessionLogin: (req, res, next) => {
+            console.log("Session loginnnnn")
             /* 
             const idToken = req.body.idToken.toString();
             const expiresIn = 60 * 60 * 8 * 1000;
@@ -69,17 +92,10 @@ module.exports = (auth, clientAuth) => {
             }
         },
         recuperarContrasena: (req, res, next) => {
-            const actionCodeSettings = {
-                url: 'https://multa-app-front.herokuapp.com/'
-            };
-            firebase.auth().sendPasswordResetEmail(req.body.email, actionCodeSettings)
-                .then(() => {
-                    console.log('E-mail enviado');
-                    res.send('E-mail enviado');
-                }).catch(error => {
-                    console.log(error);
-                    res.json(error);
-                });
+            console.log("Recuperando la psw")
+            let email = req.body.email.toString();
+            recuperarContrasena(email, res)
+
         }
     }
 }
