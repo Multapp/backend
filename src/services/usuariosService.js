@@ -135,6 +135,7 @@ module.exports = (db, auth, imageService, clientAuth) => {
                     departamento: req.body.departamento,
                     localidad: req.body.localidad,
                     provincia: req.body.provincia,
+                    ...(req.body.patentes && {patentes: req.body.patentes})
                 });
                 if (req.file) { // si se carga foto se actualiza, sino no
                     // sube su avatar a storage
